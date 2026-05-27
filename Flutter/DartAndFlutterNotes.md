@@ -1,2200 +1,1422 @@
 # The Complete Dart & Flutter Developer Course
-**By Rivaan Ranawat | Beginner to Advanced**
-
+### By Rivaan Ranawat | Beginner to Advanced
 ---
 
 ## Table of Contents
-1. [PART 1: DART FUNDAMENTALS](#part-1-dart-fundamentals)
-2. [PART 2: OBJECT ORIENTED PROGRAMMING](#part-2-oop-in-dart)
-3. [PART 3: COLLECTIONS & DATA STRUCTURES](#part-3-collections--data-structures)
-4. [PART 4: ASYNC DART](#part-4-async-dart)
-5. [PART 5: ADVANCED DART FEATURES](#part-5-advanced-dart-features)
-6. [PART 6: FLUTTER SETUP & BASICS](#part-6-flutter-setup--basics)
-7. [PART 7: FLUTTER CORE WIDGETS](#part-7-flutter-core-widgets)
-8. [PART 8: CURRENCY CONVERTER APP](#part-8-currency-converter-app)
-9. [PART 9: WEATHER APP](#part-9-weather-app)
-10. [PART 10: FLUTTER INTERNALS](#part-10-flutter-internals)
-11. [PART 11: SHOP APP](#part-11-shop-app)
-12. [PART 12: RESPONSIVE UI](#part-12-responsive-ui)
+1. [PART 1 — Dart Fundamentals](#part-1--dart-fundamentals)
+2. [PART 2 — Object Oriented Programming](#part-2--object-oriented-programming)
+3. [PART 3 — Collections & Data Structures](#part-3--collections--data-structures)
+4. [PART 4 — Async Dart](#part-4--async-dart)
+5. [PART 5 — Advanced Dart Features](#part-5--advanced-dart-features)
+6. [PART 6 — Flutter Setup & Basics](#part-6--flutter-setup--basics)
+7. [PART 7 — Flutter Core Widgets](#part-7--flutter-core-widgets)
+8. [PART 8 — Currency Converter App](#part-8--currency-converter-app)
+9. [PART 9 — Weather App](#part-9--weather-app)
+10. [PART 10 — Flutter Internals](#part-10--flutter-internals)
+11. [PART 11 — Shop App](#part-11--shop-app)
+12. [PART 12 — Responsive UI](#part-12--responsive-ui)
 
 ---
 
-# PART 1: DART FUNDAMENTALS
-
-## 00:00:00 — Course Overview
-- Full-stack mobile development course: Dart language first, then Flutter framework.
-- Structure: Language fundamentals → OOP → Async → Flutter widgets → Real projects (Currency Converter, Weather App, Shop App).
-- Prerequisites: Basic programming familiarity helpful but not required.
+# PART 1 — Dart Fundamentals
 
 ---
 
-## 00:02:16 — What is Dart?
-- **Dart** is a strongly-typed, object-oriented language developed by Google.
-- Compiles to native ARM code (mobile/desktop) or JavaScript (web).
-- Primary language for Flutter; also used independently for CLI/server-side apps.
-- Key design goals: Fast execution, AOT (Ahead-of-Time) + JIT (Just-in-Time) compilation, sound null safety.
-- **Sound null safety**: Variables can't be null unless explicitly declared nullable (e.g., `String?`).
+## What is Dart?
+
+Dart is a programming language made by Google. It is the language you write Flutter apps in.  
+Think of Dart as the pen — Flutter is the paper you draw on.
+
+- Dart is **strongly typed** — every variable has a fixed type (int, String, etc.)
+- It is **object-oriented** — everything is an object
+- Dart compiles to **native machine code** on mobile/desktop, and to **JavaScript** for the web
+- This is why Flutter apps feel fast — they run as real compiled code, not interpreted scripts
+- Dart has **sound null safety** — the compiler guarantees a variable can't be null unless you say so
+- Two compilation modes:
+  - **JIT** (Just-in-Time) — used during development. Enables hot reload
+  - **AOT** (Ahead-of-Time) — used for production builds. Gives fast performance
 
 ---
 
-## 00:03:52 — Dart SDK
-- **SDK** (Software Development Kit): Includes the Dart compiler, runtime, and core libraries.
-- Installation: Download from `dart.dev` or install via Flutter SDK (Flutter bundles Dart).
-- Verify install: `dart --version`
-- Run a Dart file: `dart run filename.dart`
-- DartPad (`dartpad.dev`): In-browser playground, great for quick experimentation.
+## Dart SDK
+
+SDK = Software Development Kit. It includes the compiler, runtime, and built-in libraries.
+
+- When you install Flutter, Dart comes bundled with it — no separate install needed
+- `dart --version` → check if Dart is installed
+- `dart run filename.dart` → run a Dart file from terminal
+- **DartPad** (`dartpad.dev`) → browser-based editor, useful for quick practice without setup
 
 ---
 
-## 00:06:57 — Print Statement
+## main() Function & print()
+
+Every Dart program starts from `main()`. Without it, the program doesn't know where to begin.
+
+- `void main()` → entry point of every Dart program
+- `void` means the function returns nothing
+- `print()` → outputs to the console
+- **String interpolation**: embed variables or expressions inside a string using `$` or `${}`
+  - `$variable` → for simple variables
+  - `${expression}` → for expressions like `${2 + 2}`
+
 ```dart
 void main() {
-  print('Hello, World!');         // prints to console
-  print(42);                       // works with any type
-  print('Value: ${2 + 2}');       // string interpolation with expressions
-  print('Name: $name');           // simple variable interpolation
+  print('Hello');          // prints text
+  print('Sum: ${2 + 2}'); // prints: Sum: 4
 }
 ```
-- `main()` is the **entry point** of every Dart program.
-- `void` means the function returns nothing.
-- String interpolation: `$variable` or `${expression}`.
 
 ---
 
-## 00:09:59 — Operators
-**Arithmetic:**
+## Comments
+
+Comments are notes for the programmer — the compiler ignores them completely.
+
+- `//` → single line comment
+- `/* ... */` → multi-line comment
+- `///` → documentation comment (shown in IDE tooltips as help text)
+- Always use comments to explain *why* something is done, not *what* is obvious
+
+---
+
+## Variables & Data Types
+
+A variable is a named box that stores a value. Every box has a type.
+
+**Core types in Dart:**
+- `int` → whole numbers (1, 42, -7)
+- `double` → decimal numbers (3.14, -0.5)
+- `String` → text ('hello', "world")
+- `bool` → true or false only
+- `num` → parent type of both int and double
+
+**How to declare:**
+- `int age = 25;` → explicit type (clear and readable)
+- `var city = 'Delhi';` → Dart infers the type (city is locked as String)
+- `dynamic x = 5;` → can hold any type at any time (avoid — loses type safety)
+
+**`final` vs `const`:**
+- `final` → set once at runtime, can't change after that
+  - Use when value is known only when the app runs (e.g., current time, user input)
+- `const` → set at compile time, never changes ever
+  - Use for truly fixed values like `const double pi = 3.14159`
+- Key difference: `final DateTime now = DateTime.now()` works. `const DateTime now = DateTime.now()` does NOT — because DateTime.now() is not known at compile time
+
+---
+
+## Null Safety
+
+Null safety means the compiler protects you from null errors (the most common crash source).
+
+- By default, no variable can be null in Dart
+- If you WANT a variable to be nullable, add `?` → `String? nickname`
+- **`?.` (null-safe access)** → call only if not null, else return null
+- **`??` (null coalescing)** → return a fallback if the left side is null
+- **`!` (null assertion)** → "I promise this is not null" — crashes if you're wrong
+
 ```dart
-+  -  *  /      // standard (/ always returns double)
-~/             // integer division
-%              // modulus (remainder)
+String? name;
+print(name?.length);     // safe — returns null, not a crash
+print(name ?? 'Guest'); // if name is null, print 'Guest'
+name!.length;            // force it — dangerous if name is actually null
 ```
 
-**Comparison:** `==  !=  >  <  >=  <=`
+> Rule: Use `?` when null is genuinely possible. Use `??` to provide fallbacks. Avoid `!` unless you're certain.
 
-**Logical:** `&&  ||  !`
+---
 
-**Assignment:**
-```dart
-=   +=   -=   *=   /=   ~/=   %=
-```
+## Strings Deep Dive
+
+Strings are text values wrapped in quotes.
+
+- Single quotes `'text'` and double quotes `"text"` are both valid — pick one and be consistent
+- Triple quotes `'''...'''` → multi-line strings (preserves line breaks)
+- Strings are **immutable** — you can't change a string, you create a new one
+- Common string methods:
+  - `.length` → number of characters
+  - `.toUpperCase()` / `.toLowerCase()`
+  - `.contains('x')` → true/false
+  - `.replaceAll('old', 'new')`
+  - `.split(',')` → splits into a List
+  - `.trim()` → removes leading/trailing spaces
+  - `.isEmpty` / `.isNotEmpty`
+  - `.startsWith('H')`
+
+---
+
+## Numbers
+
+- `int.parse('42')` → converts String to int
+- `double.parse('3.14')` → converts String to double
+- `42.toString()` → converts number to String
+- `.toStringAsFixed(2)` → formats a double to 2 decimal places (useful for displaying prices)
+- `.round()` / `.ceil()` / `.floor()` → rounding methods
+
+---
+
+## Operators
+
+**Arithmetic:** `+  -  *  /  ~/  %`
+- `/` always returns double
+- `~/` is integer division (drops decimal)
+- `%` is remainder (e.g., 10 % 3 = 1)
+
+**Comparison:** `==  !=  >  <  >=  <=` → always return bool
+
+**Logical:** `&&` (and) `||` (or) `!` (not)
+
+**Assignment:** `=  +=  -=  *=  /=`
 
 **Null-aware:**
-```dart
-??    // if-null: a ?? b  → returns b if a is null
-??=   // assign only if null: a ??= 'default'
-?.    // null-safe access: obj?.method()
-```
+- `??` → return right side if left is null
+- `??=` → assign only if current value is null
+- `?.` → safely access member if not null
 
-**Type test:**
-```dart
-is     // a is String
-is!    // a is! int
-```
+**Type check:**
+- `is` → checks type: `x is String`
+- `is!` → checks not of type: `x is! int`
 
 ---
 
-## 00:14:39 — Comments
+## Control Flow
+
+**if / else if / else:**
+- Used when you need to make decisions based on conditions
+- Only the first matching block runs
+
+**Ternary operator:** → shorthand for simple if-else
 ```dart
-// Single-line comment
-
-/* Multi-line
-   comment */
-
-/// Documentation comment (shown in IDE tooltips)
-/// Supports markdown formatting
+String label = score >= 50 ? 'Pass' : 'Fail';
 ```
-- Prefer `///` for public APIs and class/method docs.
+
+**switch statement:**
+- Use when you're checking one variable against many possible values
+- Always use `break` or the case falls through to the next one
+- Dart 3+ has **switch expressions** — cleaner one-liner version
 
 ---
 
-## 00:17:31 — Variables
-### Type System
-```dart
-// Explicit typing
-int age = 25;
-double price = 9.99;
-String name = 'Alice';
-bool isActive = true;
+## Loops
 
-// Type inference (var)
-var city = 'Delhi';    // inferred as String
-var count = 0;         // inferred as int
+Loops repeat a block of code multiple times.
 
-// Dynamic (avoid unless necessary)
-dynamic anything = 42;
-anything = 'now a string'; // valid but unsafe
-```
+**for loop** — use when you know how many times to repeat
+**for-in loop** — use when iterating over a collection (list, set, etc.)
+**while loop** — use when repeating until a condition becomes false
+**do-while loop** — same as while, but always runs at least once
 
-### `final` vs `const`
-```dart
-final String username = 'alice';   // set once at runtime
-const double pi = 3.14159;         // compile-time constant
-
-// Key difference:
-final DateTime now = DateTime.now();  // ✅ evaluated at runtime
-const DateTime now = DateTime.now(); // ❌ error — not compile-time constant
-```
-
-### Null Safety
-```dart
-String name = 'Bob';      // non-nullable: CANNOT be null
-String? nickname;         // nullable: CAN be null, defaults to null
-
-// Null-aware operators
-print(nickname?.length);        // safe call → null instead of crash
-print(nickname ?? 'No name');   // fallback value
-nickname!.length;               // force unwrap (throws if null — use carefully)
-```
-
-### Strings Deep Dive
-```dart
-String s1 = 'single quotes';
-String s2 = "double quotes";
-String s3 = '''
-  multi-line
-  string
-''';
-
-// Concatenation
-String full = 'Hello' + ' ' + 'World';
-String full2 = 'Hello $name';
-
-// Common methods
-s1.length;
-s1.toUpperCase();
-s1.toLowerCase();
-s1.contains('sub');
-s1.replaceAll('old', 'new');
-s1.split(',');
-s1.trim();
-s1.isEmpty;
-s1.startsWith('H');
-```
-
-### Numbers
-```dart
-int x = 10;
-double y = 3.14;
-num z = 5;     // supertype of int & double
-
-int.parse('42');       // String → int
-double.parse('3.14');  // String → double
-42.toString();         // int → String
-y.toStringAsFixed(2);  // "3.14"
-y.round();   .ceil();   .floor();
-```
+**Loop control:**
+- `break` → exit the loop entirely
+- `continue` → skip current iteration, go to next
 
 ---
 
-# PART 2: OOP IN DART
+## Functions
 
-## 01:11:35 — Control Flow
-### if / else
-```dart
-if (score >= 90) {
-  print('A');
-} else if (score >= 80) {
-  print('B');
-} else {
-  print('C');
-}
-```
+A function is a named block of reusable code.
 
-### Ternary Operator
-```dart
-String result = score >= 50 ? 'Pass' : 'Fail';
-```
+- **Return type** goes before the name: `int add(int a, int b) { return a + b; }`
+- **Arrow function** → shorthand for single-expression functions: `int add(int a, int b) => a + b;`
+- **Named parameters** → called by name, can have defaults: `greet({required String name, int age = 0})`
+- **Optional positional parameters** → wrapped in `[]`: `String full(String first, [String? last])`
+- **Functions are first-class objects** → you can pass a function as a parameter to another function
+- **Anonymous functions** → functions without names, often used as callbacks: `(int x) => x * 2`
+- **Higher-order functions** → functions that take or return other functions (like `.map()`, `.where()`)
 
-### Switch Statement
-```dart
-switch (day) {
-  case 'Monday':
-    print('Start of week');
-    break;
-  case 'Friday':
-    print('End of week');
-    break;
-  default:
-    print('Midweek');
-}
-```
-
-### Switch Expression (Dart 3+)
-```dart
-String label = switch (day) {
-  'Monday' => 'Start',
-  'Friday' => 'End',
-  _ => 'Middle',
-};
-```
+> Key insight: In Dart, functions are values. You can store them in variables, pass them around, and return them.
 
 ---
 
-## 01:37:52 — Exercise 1
-- Practical reinforcement: variables, operators, control flow combined.
-- Common task: FizzBuzz, basic calculator, grade evaluator.
-- Focus: solidify understanding before moving to loops.
+# PART 2 — Object Oriented Programming
 
 ---
 
-## 01:46:06 — Loops
-### for loop
-```dart
-for (int i = 0; i < 5; i++) {
-  print(i);
-}
-```
+## What is OOP?
 
-### for-in loop (iterating collections)
-```dart
-List<String> fruits = ['apple', 'banana', 'cherry'];
-for (String fruit in fruits) {
-  print(fruit);
-}
-```
+OOP (Object-Oriented Programming) is a way of writing code by modeling real-world things as objects.
 
-### while loop
-```dart
-int i = 0;
-while (i < 5) {
-  print(i);
-  i++;
-}
-```
-
-### do-while loop
-```dart
-int i = 0;
-do {
-  print(i);
-  i++;
-} while (i < 5);
-```
-
-### Loop control
-```dart
-break;     // exit loop entirely
-continue;  // skip current iteration
-```
+- An **object** = data (properties) + behavior (methods) bundled together
+- A **class** = the blueprint/template for creating objects
+- An **instance** = one specific object created from that class
+- Example: `Car` is a class. Your specific car (red Honda) is an instance.
 
 ---
 
-## 02:10:49 — Functions
-```dart
-// Basic function
-int add(int a, int b) {
-  return a + b;
-}
+## Classes & Constructors
 
-// Arrow function (single expression)
-int multiply(int a, int b) => a * b;
+A class defines what properties and methods an object will have.
 
-// Named parameters (with defaults)
-void greet({required String name, int age = 0}) {
-  print('Hello $name, age $age');
-}
-greet(name: 'Alice', age: 25);
+- **Instance variables** → properties of the object (e.g., name, age)
+- **Constructor** → special method called when creating an object. Initializes properties.
+- `Person(this.name, this.age)` → shorthand constructor — automatically assigns params to fields
+- **Named constructor** → alternative way to create an object with different logic: `Person.anonymous()`
+- **Factory constructor** → returns an existing or computed instance instead of always creating new
 
-// Optional positional parameters
-String fullName(String first, [String? last]) {
-  return last != null ? '$first $last' : first;
-}
-
-// Functions as first-class objects
-void runOp(int a, int b, int Function(int, int) op) {
-  print(op(a, b));
-}
-
-// Anonymous functions / lambdas
-var square = (int x) => x * x;
-
-// Higher-order functions (on collections)
-List<int> nums = [1, 2, 3, 4, 5];
-nums.map((n) => n * 2).toList();
-nums.where((n) => n.isEven).toList();
-nums.reduce((a, b) => a + b);
-nums.forEach((n) => print(n));
-```
-
-**Important:** Dart passes objects by reference for complex types, by value for primitives (int, double, bool, String — strings are immutable).
-
----
-
-## 02:46:53 — Classes
 ```dart
 class Person {
-  // Instance variables
   String name;
   int age;
-
-  // Constructor
-  Person(this.name, this.age);
-
-  // Named constructor
-  Person.anonymous() : name = 'Unknown', age = 0;
-
-  // Method
-  void introduce() {
-    print('I am $name, age $age');
-  }
-
-  // Getter
-  String get info => '$name ($age)';
-
-  // Setter
-  set setAge(int value) {
-    if (value >= 0) age = value;
-  }
+  Person(this.name, this.age);     // constructor
+  void greet() => print('Hi, I am $name');
 }
 
-// Usage
-var p = Person('Alice', 30);
-p.introduce();
-print(p.info);
+var p = Person('Anik', 20);
+p.greet();
 ```
 
-### Constructors
-```dart
-class Point {
-  final double x, y;
-
-  // Default constructor with initializer list
-  Point(this.x, this.y);
-
-  // Named constructor
-  Point.origin() : x = 0, y = 0;
-
-  // Factory constructor (returns existing/computed instance)
-  factory Point.fromMap(Map<String, double> map) {
-    return Point(map['x']!, map['y']!);
-  }
-}
-```
+**Getters & Setters:**
+- `get` → computed property (read-only calculated value)
+- `set` → controlled write access (you can add validation)
 
 ---
 
-## 03:41:10 — Inheritance
+## Inheritance (extends)
+
+Inheritance lets one class reuse the properties and methods of another class.
+
+- Use `extends` → "this class IS a kind of that class"
+- `super` → refers to the parent class. Used to call parent constructor or methods
+- `@override` → marks that you're replacing the parent's method with your own
+- Dart supports only **single inheritance** — a class can extend only one other class
+
 ```dart
-class Animal {
-  String name;
-  Animal(this.name);
-
-  void speak() => print('...');
-}
-
+class Animal { void speak() => print('...'); }
 class Dog extends Animal {
-  Dog(String name) : super(name);   // call parent constructor
-
   @override
-  void speak() => print('Woof!');   // override parent method
-
-  void fetch() => print('$name fetches!');
+  void speak() => print('Woof!');
 }
 ```
-- `extends` = single inheritance.
-- `super` = access parent class members/constructor.
-- `@override` annotation: good practice for clarity and compiler checks.
+
+> Analogy: Animal is the parent. Dog is a child. Dog inherits everything and can override specific things.
 
 ---
 
-## 03:59:58 — implements Keyword
+## implements (Interfaces)
+
+`implements` is a contract — "this class promises to have ALL these methods."
+
+- Unlike `extends`, you don't inherit any implementation — you must write everything yourself
+- A class can implement **multiple** interfaces (unlike extends which only allows one)
+- Any class can act as an interface in Dart — there's no separate `interface` keyword
+
 ```dart
-abstract class Flyable {
-  void fly();          // no implementation — contract only
-}
-
-abstract class Swimmable {
-  void swim();
-}
-
-// A class can implement MULTIPLE interfaces
-class Duck implements Flyable, Swimmable {
+abstract class Flyable { void fly(); }
+class Bird implements Flyable {
   @override
-  void fly() => print('Duck flying');
-
-  @override
-  void swim() => print('Duck swimming');
-}
-```
-- `implements`: Must provide ALL methods — no inherited implementation.
-- Dart has no `interface` keyword; any class can be used as an interface.
-
----
-
-## 04:10:13 — Abstract Classes
-```dart
-abstract class Shape {
-  // Abstract method — subclass MUST implement
-  double area();
-
-  // Concrete method — subclass INHERITS this
-  void describe() => print('Area: ${area()}');
-}
-
-class Circle extends Shape {
-  double radius;
-  Circle(this.radius);
-
-  @override
-  double area() => 3.14159 * radius * radius;
-}
-```
-- `abstract class`: Cannot be instantiated directly.
-- Difference from interface (`implements`): `extends abstract class` inherits concrete methods; `implements` requires re-implementing everything.
-
----
-
-## 04:15:03 — OOP in Dart (Overview)
-The 4 pillars, Dart-specific implementation:
-
----
-
-## 04:17:09 — Polymorphism
-- Same interface, different behavior depending on type at runtime.
-```dart
-List<Animal> zoo = [Dog('Rex'), Cat('Whiskers')];
-for (var animal in zoo) {
-  animal.speak();  // calls Dog.speak() or Cat.speak() — determined at runtime
+  void fly() => print('Bird flies');
 }
 ```
 
----
-
-## 04:20:52 — Abstraction
-- Hide complexity; expose only what's necessary.
-- Achieved via abstract classes, interfaces, and access modifiers.
-- Example: You call `car.start()` — you don't care about the engine internals.
+> Use `implements` when you want to guarantee a class has a specific set of methods, but different implementations.
 
 ---
 
-## 04:23:12 — Encapsulation
-```dart
-class BankAccount {
-  double _balance = 0;   // private (underscore prefix in Dart)
+## Abstract Classes
 
-  double get balance => _balance;
+An abstract class is a class that cannot be created directly — it's only a template.
 
-  void deposit(double amount) {
-    if (amount > 0) _balance += amount;
-  }
-}
-```
-- Dart uses `_` prefix for private (private to the **library/file**, not class).
-- No `private`/`public` keywords — underscore is the convention.
+- Use `abstract` keyword
+- Abstract methods have no body — subclasses MUST implement them
+- Can also have regular (concrete) methods that subclasses inherit
+- Difference from `implements`: extending abstract class gives you the concrete methods for free. Implementing it makes you write everything.
 
 ---
 
-## 04:26:14 — Mixins
-```dart
-mixin Logger {
-  void log(String message) => print('[LOG] $message');
-}
+## The 4 Pillars of OOP
 
-mixin Validator {
-  bool isValid(String input) => input.isNotEmpty;
-}
+**1. Encapsulation** — hide internal details, expose only what's needed
+- In Dart, prefix with `_` to make something private to the file: `_balance`
+- Use getters/setters to control how private data is accessed
 
-class UserService with Logger, Validator {
-  void createUser(String name) {
-    if (isValid(name)) {
-      log('Creating user: $name');
-    }
-  }
-}
-```
-- Mixins add behavior to a class without inheritance.
-- Use `with` keyword.
-- Cannot have constructors.
-- Solves multiple inheritance limitations cleanly.
+**2. Inheritance** — one class reuses another's code via `extends`
+- Promotes code reuse, reduces duplication
+
+**3. Polymorphism** — same method name, different behavior depending on the actual object
+- You can call the same method on different subclass objects and get different results
+- Decided at runtime, not compile time
+
+**4. Abstraction** — hide the "how", show only the "what"
+- You call `car.start()` without caring about the engine internals
+- Achieved via abstract classes and interfaces
 
 ---
 
-## 04:33:40 — Class Modifiers (Dart 3+)
-| Modifier | Effect |
-|----------|--------|
-| `final class` | Cannot be extended or implemented outside library |
-| `base class` | Can extend but not implement |
-| `interface class` | Can implement but not extend |
-| `sealed class` | All subclasses must be in the same library (exhaustive switch) |
-| `abstract` | Cannot be instantiated |
+## Mixins
+
+A mixin adds capabilities to a class without using inheritance.
+
+- Use `mixin` to define it, `with` to apply it
+- Mixins can't have constructors
+- You can apply multiple mixins to one class
+- Think of mixins as "plug-ins" you attach to a class
 
 ```dart
-sealed class Result {}
-class Success extends Result { final String data; Success(this.data); }
-class Failure extends Result { final String error; Failure(this.error); }
+mixin Logger { void log(String msg) => print('[LOG] $msg'); }
 
-// Switch is exhaustive — compiler knows all subclasses
-String handle(Result r) => switch (r) {
-  Success s => 'OK: ${s.data}',
-  Failure f => 'Error: ${f.error}',
-};
+class UserService with Logger {
+  void create() => log('User created');
+}
 ```
+
+> Use case: You want Logger behavior in 10 different classes. Instead of inheriting from a Logger class (which limits you to one parent), you mix it in.
 
 ---
 
-# PART 3: COLLECTIONS & DATA STRUCTURES
+## Class Modifiers (Dart 3+)
 
-## 04:40:48 — Lists
-```dart
-// Creation
-List<int> nums = [1, 2, 3];
-var empty = <String>[];
-var filled = List.filled(5, 0);    // [0, 0, 0, 0, 0]
-var generated = List.generate(5, (i) => i * 2); // [0, 2, 4, 6, 8]
+| Modifier | Meaning |
+|----------|---------|
+| `final class` | Can't be extended or implemented outside the file |
+| `base class` | Can extend but NOT implement |
+| `interface class` | Can implement but NOT extend |
+| `sealed class` | All subclasses must be in same file — allows exhaustive switch |
+| `abstract` | Can't be instantiated directly |
 
-// Access
-nums[0];       // first element
-nums.last;     // last element
-nums.length;
-
-// Modification
-nums.add(4);
-nums.addAll([5, 6]);
-nums.insert(0, 99);       // insert at index
-nums.remove(3);           // remove by value
-nums.removeAt(0);         // remove by index
-nums.removeLast();
-nums.clear();
-
-// Querying
-nums.contains(2);
-nums.indexOf(3);
-nums.isEmpty;
-nums.isNotEmpty;
-
-// Iteration & transformation
-nums.forEach((n) => print(n));
-var doubled = nums.map((n) => n * 2).toList();
-var evens = nums.where((n) => n.isEven).toList();
-var sum = nums.reduce((a, b) => a + b);
-nums.sort();
-nums.sort((a, b) => b.compareTo(a)); // descending
-
-// Spread operator
-var combined = [...nums, ...doubled];
-
-// List spread in constructors (common in Flutter)
-var items = [
-  if (isAdmin) 'Admin Panel',
-  ...regularItems,
-];
-```
+- **Sealed classes** are very useful with pattern matching — the compiler knows all possible subtypes
 
 ---
 
-## 05:23:04 — Sets
-```dart
-// Set: unordered, unique elements
-Set<String> colors = {'red', 'green', 'blue'};
-var s = <int>{};       // empty set
-
-colors.add('yellow');
-colors.add('red');     // duplicate — ignored
-colors.remove('green');
-colors.contains('blue');  // fast O(1) lookup
-colors.length;
-
-// Set operations
-var a = {1, 2, 3};
-var b = {2, 3, 4};
-a.union(b);        // {1, 2, 3, 4}
-a.intersection(b); // {2, 3}
-a.difference(b);   // {1}
-```
-- Use Set when you need **uniqueness** and **fast membership checks**.
-- Use List when you need **ordering** or **duplicates**.
+# PART 3 — Collections & Data Structures
 
 ---
 
-## 05:25:39 — Maps
-```dart
-// Map: key-value pairs
-Map<String, int> scores = {'Alice': 95, 'Bob': 87};
-var m = <String, dynamic>{};
+## Lists
 
-// Access
-scores['Alice'];          // 95
-scores['Unknown'];        // null (no error)
-scores.containsKey('Bob');
-scores.containsValue(95);
+A List is an ordered collection of items. Like an array in other languages.
 
-// Modification
-scores['Charlie'] = 91;          // add/update
-scores.putIfAbsent('Dan', () => 80); // only adds if key absent
-scores.remove('Bob');
-scores.update('Alice', (v) => v + 5); // update existing value
+- Ordered → items maintain their insertion order
+- Can contain duplicates
+- Zero-indexed → first item is at index 0
+- Generic type: `List<int>` means only integers allowed
+- Common operations: `add()`, `remove()`, `contains()`, `length`, `sort()`, `map()`, `where()`, `reduce()`
+- `map()` → transform each item and return a new iterable
+- `where()` → filter items by condition
+- `reduce()` → combine all items into one value
 
-// Iteration
-scores.forEach((key, value) => print('$key: $value'));
-scores.keys;
-scores.values;
-scores.entries;    // Iterable<MapEntry<K,V>>
-
-for (var entry in scores.entries) {
-  print('${entry.key}: ${entry.value}');
-}
-
-// Transformations
-var upperCased = scores.map((k, v) => MapEntry(k.toUpperCase(), v));
-```
+> Think of a List like a numbered shelf — order matters, duplicates allowed.
 
 ---
 
-## 05:50:32 — Enums
-```dart
-// Basic enum
-enum Direction { north, south, east, west }
+## Sets
 
-// Enhanced enum (Dart 2.17+)
-enum Color {
-  red(0xFF0000),
-  green(0x00FF00),
-  blue(0x0000FF);
+A Set is an unordered collection where every item is unique.
 
-  final int hexValue;
-  const Color(this.hexValue);
+- No duplicates — adding the same item twice is silently ignored
+- Unordered — no guarantee of order
+- Fast `contains()` check (O(1) — constant time regardless of set size)
+- Set operations: `union()`, `intersection()`, `difference()`
+- Use `{}` syntax: `Set<String> tags = {'flutter', 'dart'}`
 
-  String get hex => '#${hexValue.toRadixString(16).padLeft(6, '0')}';
-}
-
-// Usage
-Direction d = Direction.north;
-print(d.name);    // 'north'
-print(d.index);   // 0
-
-// Enums work great with switch
-switch (d) {
-  case Direction.north: print('Go up');
-  case Direction.south: print('Go down');
-  // ...
-}
-```
+> Use Set when: uniqueness matters. Use List when: order or duplicates matter.
 
 ---
 
-# PART 4: ASYNC DART
+## Maps
 
-## 06:03:03 — Exception Handling
-```dart
-try {
-  int result = 10 ~/ 0;       // throws IntegerDivisionByZeroException
-  throw Exception('custom error');
-} on IntegerDivisionByZeroException {
-  print('Divide by zero');
-} on FormatException catch (e) {
-  print('Format error: $e');
-} catch (e, stackTrace) {
-  print('Unknown error: $e');
-  print(stackTrace);
-} finally {
-  print('Always runs');
-}
+A Map is a collection of key-value pairs.
 
-// Custom exceptions
-class InsufficientFundsException implements Exception {
-  final double amount;
-  InsufficientFundsException(this.amount);
-  @override
-  String toString() => 'Insufficient funds: need \$$amount more';
-}
-```
+- Each key is unique. Values can repeat.
+- Like a dictionary — look up a value by its key
+- `map['key']` → returns the value (or null if key doesn't exist, no crash)
+- `containsKey()` / `containsValue()` → check existence
+- `entries` → iterate over key-value pairs together
+- `putIfAbsent()` → only adds if key not already there
+
+> Analogy: A Map is like a contact book — names (keys) are unique, phone numbers (values) are the data.
 
 ---
 
-## 06:11:45 — Futures
-- **Future**: Represents a value that will be available at some point in the future (async operation).
+## Enums
 
-```dart
-// Returning a Future
-Future<String> fetchUser() async {
-  await Future.delayed(Duration(seconds: 2));
-  return 'Alice';
-}
+Enums define a fixed set of named constants.
 
-// Consuming with async/await
-void main() async {
-  print('Fetching...');
-  String user = await fetchUser();
-  print('Got: $user');
-}
-
-// .then() / .catchError() — alternative chaining style
-fetchUser()
-  .then((user) => print(user))
-  .catchError((e) => print('Error: $e'))
-  .whenComplete(() => print('Done'));
-
-// Future.wait — run multiple futures in parallel
-Future<void> fetchAll() async {
-  var results = await Future.wait([
-    fetchUser(),
-    fetchData(),
-    fetchConfig(),
-  ]);
-}
-
-// Future.delayed — useful for testing/mocking
-await Future.delayed(Duration(milliseconds: 500));
-```
-
-**Key concepts:**
-- `async` marks a function as asynchronous.
-- `await` suspends execution until the Future completes.
-- Functions marked `async` always return a `Future`.
-- Never block the main thread — always await or handle async.
+- Use when a variable can only be one of a defined set of values
+- Much safer than using raw strings or ints ("Monday" vs `Day.monday`)
+- Dart 3 enhanced enums — can have properties and methods
+- `.name` → string version of the enum value
+- `.index` → its position in the declaration order
+- Works great with switch — IDE warns if you miss a case
 
 ---
 
-## 06:56:08 — Streams
-- **Stream**: A sequence of asynchronous events over time (like a pipe of data).
+# PART 4 — Async Dart
 
-```dart
-// Creating a Stream
-Stream<int> countDown(int from) async* {
-  for (int i = from; i >= 0; i--) {
-    await Future.delayed(Duration(seconds: 1));
-    yield i;        // yield emits a value into the stream
-  }
-}
+---
 
-// Listening to a Stream
-StreamSubscription sub = countDown(5).listen(
-  (value) => print(value),
-  onError: (e) => print('Error: $e'),
-  onDone: () => print('Completed'),
-);
+## Exception Handling
 
-// Cancel a subscription
-sub.cancel();
+Exceptions are unexpected errors that happen at runtime. If uncaught, they crash the app.
 
-// await for — cleaner iteration
-await for (int n in countDown(5)) {
-  print(n);
-}
+- `try` block → code that might throw an error
+- `on SpecificException` → catch a specific type of error
+- `catch (e, stack)` → catch any error and get the error object + stack trace
+- `finally` → always runs whether or not an error occurred (use for cleanup)
+- You can create custom exceptions by implementing the `Exception` class
 
-// Stream types
-// Single subscription: one listener only (most streams)
-// Broadcast: multiple listeners (e.g., UI events)
+> Rule: Always handle exceptions in async code (network calls, file reads, parsing). If something can fail, it probably will at some point.
 
-StreamController<String> controller = StreamController<String>.broadcast();
-controller.sink.add('event 1');
-controller.stream.listen((e) => print(e));
-controller.close();
+---
 
-// Stream transformations
-countDown(10)
-  .where((n) => n.isEven)
-  .map((n) => 'Number: $n')
-  .listen(print);
-```
+## Futures (Async / Await)
 
-**Future vs Stream:**
+A Future represents a value that doesn't exist yet — it'll be available sometime in the future.
+
+- Think of a Future like a "promise" — "I'll give you the result when I'm done"
+- `async` keyword → marks a function as asynchronous. It will return a Future.
+- `await` keyword → pause here and wait for the Future to complete before continuing
+- A function marked `async` ALWAYS returns a Future, even if you return a plain value
+- `Future.wait([f1, f2, f3])` → run multiple futures at the same time and wait for ALL to finish
+- `Future.delayed(Duration(seconds: 2))` → creates an artificial delay (useful for testing)
+
+> Why does this matter? Network calls, database reads, file access — all take time. If you don't use async, your UI would freeze while waiting. async/await lets the app keep running while waiting for data.
+
+**`.then()` vs `async/await`:**  
+Both work. `async/await` is cleaner and easier to read — prefer it.
+
+---
+
+## Streams
+
+A Stream is a sequence of asynchronous events over time — like a river of data.
+
+- While a Future gives you ONE value when done, a Stream gives you MULTIPLE values over time
+- `yield` → sends a value into the stream (used in `async*` functions)
+- `listen()` → subscribes to the stream and reacts to each value
+- `cancel()` → stops listening (important to avoid memory leaks)
+- **Single-subscription stream** → only one listener at a time (most common)
+- **Broadcast stream** → multiple listeners allowed (e.g., button click events)
+- StreamController → manually creates and controls a stream
+
 | | Future | Stream |
-|---|---|---|
-| Values | One | Many |
-| When complete | Once | Multiple times (until done) |
-| Use case | HTTP response | WebSocket, sensor data, UI events |
+|--|--------|--------|
+| Values | One | Many (over time) |
+| Ends | Once | When done or cancelled |
+| Use case | HTTP response | Sensor data, live feeds, UI events |
 
 ---
 
-# PART 5: ADVANCED DART FEATURES
-
-## 07:19:46 — (Bonus) Creating Records
-- **Records** (Dart 3+): Lightweight, anonymous, immutable data structures.
-```dart
-// Record literal
-var point = (10.0, 20.0);           // positional
-var person = (name: 'Alice', age: 25); // named
-
-// Access
-print(point.$1);   // 10.0
-print(point.$2);   // 20.0
-print(person.name);
-print(person.age);
-
-// Records in functions
-(String, int) getUser() => ('Alice', 30);
-var (name, age) = getUser();  // destructuring
-```
+# PART 5 — Advanced Dart Features
 
 ---
 
-## 07:23:57 — (Bonus) Patterns & Pattern Matching
-```dart
-// Switch patterns (Dart 3+)
-switch (shape) {
-  case Circle(radius: var r): print('Circle r=$r');
-  case Rectangle(width: var w, height: var h): print('Rect ${w}x$h');
-}
+## Records (Dart 3+)
 
-// List patterns
-var [first, second, ...rest] = [1, 2, 3, 4, 5];
+Records are lightweight, immutable data containers to group related values together.
 
-// Map patterns
-var {'name': String name, 'age': int age} = userData;
+- Like a tuple in other languages
+- No need to create a class just to return two values from a function
+- Two styles: positional `(10, 20)` and named `(x: 10, y: 20)`
+- Access positional fields with `.$1`, `.$2`; named fields with `.fieldName`
+- Supports **destructuring** — unpack multiple return values cleanly
 
-// Guard clauses in patterns
-switch (n) {
-  case int x when x > 0: print('positive');
-  case int x when x < 0: print('negative');
-  default: print('zero');
-}
-```
+> Use case: Want to return both a username AND an age from a function? Return a Record instead of creating a class.
 
 ---
 
-## 07:36:11 — Extensions
+## Pattern Matching (Dart 3+)
+
+Pattern matching lets you check a value's shape and extract data in one step.
+
+- Works with `switch` expressions and statements
+- You can match on types, list structure, map keys, and object shapes
+- **Guard clauses** → add `when` to add an extra condition inside a case
+- Makes complex conditional logic much more readable
+
+---
+
+## Extensions
+
+Extensions add new methods to an existing class without modifying it or subclassing it.
+
+- You can extend built-in types like String, int, List
+- Define with `extension NameHere on TypeHere { ... }`
+- The methods you add are available everywhere you use that type
+- Keeps code clean — instead of utility functions scattered everywhere, attach them to the type
+
 ```dart
-// Add methods to existing classes without modifying them
-extension StringUtils on String {
+extension on String {
   bool get isEmail => contains('@') && contains('.');
-  String capitalize() => isEmpty ? '' : '${this[0].toUpperCase()}${substring(1)}';
-  String truncate(int maxLength) =>
-      length <= maxLength ? this : '${substring(0, maxLength)}...';
 }
-
-// Usage
-'hello@test.com'.isEmail;   // true
-'hello world'.capitalize(); // 'Hello world'
-
-// Extensions on nullable types
-extension NullableStringExt on String? {
-  bool get isNullOrEmpty => this == null || this!.isEmpty;
-}
+'test@gmail.com'.isEmail  // true — feels natural
 ```
 
 ---
 
-# PART 6: FLUTTER SETUP & BASICS
-
-## 07:42:25 — Introduction to Flutter
-- **Flutter**: Google's UI toolkit for building natively compiled apps from a single codebase.
-- Targets: iOS, Android, Web, Windows, macOS, Linux.
-- Uses Dart language, renders its own widgets via **Skia/Impeller** graphics engine (no native components).
-- Key advantage: Pixel-perfect UI across platforms, fast development with hot reload.
+# PART 6 — Flutter Setup & Basics
 
 ---
 
-## 07:42:35 — Installing Flutter
-```bash
-# macOS (via Homebrew)
-brew install flutter
+## What is Flutter?
 
-# Or download from flutter.dev and add to PATH
-export PATH="$PATH:`pwd`/flutter/bin"
+Flutter is Google's UI toolkit for building apps from a single codebase.
 
-# Verify
-flutter doctor    # shows what's installed / what's missing
-flutter doctor -v # verbose output
-```
+- Write once → deploy to iOS, Android, Web, Windows, macOS, Linux
+- Flutter renders its own UI using the **Skia** / **Impeller** graphics engine
+- This means Flutter does NOT use native UI components — it draws everything itself
+- Why this matters: pixel-perfect UI on all platforms, consistent look everywhere
+- Core advantage: **Hot Reload** — see changes instantly without restarting the app
 
 ---
 
-## 07:51:59 — Installing Android Studio & Configuring for Android
-- Download Android Studio from developer.android.com.
-- Install Flutter & Dart plugins via Plugins settings.
-- Android SDK: Accept licenses → `flutter doctor --android-licenses`.
-- Create Android Virtual Device (AVD) in Device Manager.
-- Verify: `flutter devices` should list the emulator.
+## Installing Flutter
+
+- Download from `flutter.dev` and add to PATH
+- Or install via Homebrew on Mac: `brew install flutter`
+- `flutter doctor` → checks your setup and tells you what's missing
+- `flutter doctor -v` → verbose output with more details
 
 ---
 
-## 07:56:37 — Installing Xcode & Configuring for iOS
-- Available on Mac only via App Store.
-- After install: `sudo xcode-select --switch /Applications/Xcode.app`
-- `sudo xcodebuild -runFirstLaunch`
-- Install CocoaPods: `sudo gem install cocoapods`
-- iOS Simulator: `open -a Simulator`
+## Setting Up Editors
+
+**Android Studio:**
+- Install Flutter + Dart plugins from Settings → Plugins
+- Accept SDK licenses: `flutter doctor --android-licenses`
+- Create an AVD (Android Virtual Device) from Device Manager
+
+**VS Code:**
+- Install Flutter extension (Dart comes automatically with it)
+- Key shortcuts:
+  - `Ctrl+Shift+P` → Command Palette (access all Flutter commands)
+  - Hot Reload → press `r` in terminal, or just save the file
+  - Hot Restart → `R` → resets app state
 
 ---
 
-## 07:58:47 — Installing VS Code
-- Download from code.visualstudio.com.
-- Essential extensions: **Flutter**, **Dart** (install Flutter extension — Dart comes automatically).
+## Flutter Project Structure
 
----
-
-## 08:00:24 — Exploring VS Code
-- Command Palette: `Cmd+Shift+P` (Mac) / `Ctrl+Shift+P` (Windows).
-- Flutter: New Project via Command Palette.
-- Hot Reload: `r` in terminal, or save file (with auto hot reload setting).
-- Hot Restart: `R` in terminal (resets state).
-- Debug Console: View → Debug Console.
-
----
-
-## 08:04:41 — Creating & Exploring The Flutter Project
-Structure:
 ```
 my_app/
-├── lib/           ← Your Dart code lives here
-│   └── main.dart  ← Entry point
-├── android/       ← Android-specific config
-├── ios/           ← iOS-specific config
-├── web/           ← Web-specific config
-├── test/          ← Unit & widget tests
-└── pubspec.yaml   ← Dependencies, assets, fonts
+├── lib/           → YOUR CODE IS HERE
+│   └── main.dart  → Entry point of the app
+├── pubspec.yaml   → Dependencies, fonts, assets (like package.json)
+├── android/       → Android configs (rarely touched)
+├── ios/           → iOS configs (rarely touched)
+└── test/          → Test files
 ```
-- `pubspec.yaml`: Flutter's package manifest. Add dependencies, declare assets/fonts here.
-- `lib/` is where almost all your work happens.
+
+- 90% of your work happens inside `lib/`
+- `pubspec.yaml` is where you add packages and declare assets/fonts
+- `flutter pub get` → downloads packages listed in pubspec.yaml
 
 ---
 
-## 08:18:27 — Running Flutter App
+## Running Flutter App
+
 ```bash
-flutter run                   # run on connected device
-flutter run -d chrome         # run in browser
-flutter run -d ios            # run on iOS simulator
-flutter run --release         # production build
-flutter build apk             # Android APK
-flutter build ios             # iOS build
+flutter run              # run on connected device/emulator
+flutter run -d chrome    # run as web app
+flutter build apk        # build Android APK
+flutter build ios        # build iOS
 ```
 
 ---
 
-## 08:31:11 — Writing First Flutter Code!
+## Importing Packages
 
-## 08:32:34 — Importing Packages and material.dart
+- `import 'package:flutter/material.dart'` → Material Design widgets (most common)
+- `import 'package:flutter/cupertino.dart'` → iOS-style widgets
+- `import 'package:flutter/widgets.dart'` → base Flutter widgets only (no theme)
+- For your own files, use relative imports: `import '../widgets/my_button.dart'`
+
+---
+
+## runApp() Function
+
+`runApp()` takes a Widget and makes it the root of the entire app.
+
+- Called inside `main()` — it bootstraps the whole Flutter app
+- Whatever you pass to `runApp()` becomes the top of the widget tree
+- Usually you pass a `MaterialApp` or `CupertinoApp` here
+
+---
+
+## What are Widgets?
+
+In Flutter, EVERYTHING is a widget — text, buttons, layouts, padding, animation, the app itself.
+
+- A widget is an **immutable description of a part of the UI**
+- Widgets don't draw anything directly — they describe what to draw
+- Flutter reads the widget descriptions and builds the actual UI
+- Because widgets are just Dart objects (not drawn elements), creating/recreating them is cheap
+- Analogy: A widget is like a blueprint. The Flutter engine builds the actual building.
+
+**Two types:**
+- **StatelessWidget** → UI that never changes after being built
+- **StatefulWidget** → UI that can change based on data
+
+---
+
+## What is State?
+
+State is data that can change over time and cause the UI to update.
+
+- Examples of state: counter value, text typed by user, data fetched from API, toggle on/off
+- When state changes → Flutter re-calls `build()` → UI updates
+- State lives inside a `State` class (for StatefulWidget)
+
+---
+
+## StatelessWidget
+
+Used when your widget never needs to update based on changing data.
+
+- Extends `StatelessWidget`
+- Has only a `build()` method that returns the UI
+- Once built, it stays the same unless the parent widget passes different props
+- Always mark as `const` when all its properties are constants → better performance
+
+---
+
+## StatefulWidget
+
+Used when your widget needs to react to changing data.
+
+- Consists of TWO classes: the Widget class (immutable config) + the State class (mutable data)
+- State class holds all the variables that can change
+- `setState(() { ... })` → wraps your state change + tells Flutter to rebuild the UI
+- Access the widget's properties inside State using `widget.propertyName`
+- Never call setState in `build()` — creates infinite loop
+
 ```dart
-import 'package:flutter/material.dart';       // Material Design widgets
-import 'package:flutter/cupertino.dart';      // iOS-style widgets
-import 'package:flutter/widgets.dart';        // base Flutter widgets only
-```
-
----
-
-## 08:35:20 — runApp Function
-```dart
-void main() {
-  runApp(const MyApp());   // bootstraps the app, takes a Widget
-}
-```
-- `runApp()` inflates the given widget and attaches it to the screen.
-- The widget passed becomes the root of the widget tree.
-
----
-
-## 08:37:24 — What are Widgets?
-- **Everything in Flutter is a Widget**: text, buttons, layout, styling, animation.
-- Widgets are **immutable descriptions** of UI — they don't draw themselves, they describe what to draw.
-- Flutter rebuilds widgets when state changes (cheap — they're just Dart objects).
-- Analogy: Widgets are like blueprints; the Flutter engine constructs the actual UI from them.
-
----
-
-## 08:38:10 — Text Widget
-```dart
-Text('Hello, Flutter!')
-
-Text(
-  'Styled Text',
-  style: TextStyle(
-    fontSize: 24,
-    fontWeight: FontWeight.bold,
-    color: Colors.blue,
-    letterSpacing: 1.5,
-    fontStyle: FontStyle.italic,
-    decoration: TextDecoration.underline,
-  ),
-  textAlign: TextAlign.center,
-  maxLines: 2,
-  overflow: TextOverflow.ellipsis,
-)
-
-// Rich text with multiple styles
-RichText(
-  text: TextSpan(
-    children: [
-      TextSpan(text: 'Hello ', style: TextStyle(color: Colors.black)),
-      TextSpan(text: 'Flutter', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
-    ],
-  ),
-)
-```
-
----
-
-## 08:55:24 — Types of Widgets
-| Type | Description | Example |
-|------|-------------|---------|
-| **Structural** | Layout & positioning | `Column`, `Row`, `Stack` |
-| **Stylistic** | Appearance | `Container`, `DecoratedBox` |
-| **Input** | User interaction | `TextField`, `GestureDetector` |
-| **Display** | Show content | `Text`, `Image`, `Icon` |
-| **State-based** | `StatelessWidget` or `StatefulWidget` | — |
-
----
-
-## 08:57:22 — What is State?
-- **State**: Data that can change over time and cause the UI to rebuild.
-- Examples: user input, fetched data, toggle values, animation position.
-- Widgets rebuild when their state changes — Flutter re-calls the `build()` method.
-
----
-
-## 08:58:48 — StatelessWidget
-```dart
-class MyButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const MyButton({super.key, required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        child: Text(label),
-      ),
-    );
-  }
-}
-```
-- No mutable state — once built, it doesn't change unless parent rebuilds it.
-- Always `const` if all properties are constant.
-
----
-
-## 09:11:43 — Material & Cupertino Design
-- **Material**: Google's design language (Android-style).
-- **Cupertino**: Apple's design language (iOS-style).
-- Flutter lets you use either or mix them.
-- Start with `MaterialApp` for most projects (better component coverage).
-
----
-
-## 09:13:51 — MaterialApp
-```dart
-MaterialApp(
-  title: 'My App',
-  theme: ThemeData(
-    colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-    useMaterial3: true,
-  ),
-  home: const HomePage(),
-  // Routes
-  routes: {
-    '/': (context) => const HomePage(),
-    '/details': (context) => const DetailsPage(),
-  },
-  debugShowCheckedModeBanner: false,
-)
-```
-
----
-
-## 09:17:45 — Scaffold Widget
-```dart
-Scaffold(
-  appBar: AppBar(title: const Text('Home')),
-  body: const Center(child: Text('Content')),
-  floatingActionButton: FloatingActionButton(
-    onPressed: () {},
-    child: const Icon(Icons.add),
-  ),
-  drawer: Drawer(...),
-  bottomNavigationBar: BottomNavigationBar(...),
-  backgroundColor: Colors.white,
-)
-```
-- `Scaffold` provides the basic visual structure: app bar, body, FAB, drawer, snack bar support.
-
----
-
-## 09:21:37 — Center Widget
-```dart
-Center(child: Text('Centered text'))
-// Centers child within available space
-// Equivalent to Align(alignment: Alignment.center, ...)
-```
-
----
-
-## 09:26:28 — Widget Tree
-```
-MaterialApp
-  └── Scaffold
-        ├── AppBar
-        │     └── Text
-        └── Center
-              └── Column
-                    ├── Text
-                    └── ElevatedButton
-```
-- Flutter builds a tree of widgets.
-- Parent widgets pass constraints DOWN; children report sizes UP.
-- The rendering engine walks the tree to paint the UI.
-
----
-
-## 09:29:09 — Splitting & Extracting Widgets
-- Extract widgets into separate classes or files for readability and reuse.
-- Use VS Code shortcut: right-click on widget → "Extract Widget".
-- Rule of thumb: if a widget subtree has 20+ lines, consider extracting.
-
----
-
-## 09:34:49 — What is BuildContext?
-- `BuildContext` is a reference to **where a widget lives in the tree**.
-- Used to look up inherited data (`Theme.of(context)`, `MediaQuery.of(context)`).
-- Never store BuildContext across async gaps without checking `mounted`.
-```dart
-if (context.mounted) {
-  Navigator.of(context).pop();
+class _PageState extends State<MyPage> {
+  int count = 0;
+  // change count → call setState → build() is called again → UI shows new value
 }
 ```
 
 ---
 
-## 09:37:38 — Importing Files & Magic of Flutter Extension
+## Widget Lifecycle
+
+The sequence of events from when a StatefulWidget is created to when it's destroyed:
+
+1. **Constructor** → Widget is created with initial config
+2. **createState()** → Creates the associated State object
+3. **initState()** → Called ONCE when the widget enters the tree. Use for one-time setup (fetch data, init controllers)
+4. **build()** → Called every time the widget needs to render. Can be called many times.
+5. **setState()** → Marks widget as needing rebuild → triggers build() again
+6. **didUpdateWidget()** → Called when parent passes new config
+7. **didChangeDependencies()** → Called when an InheritedWidget dependency changes
+8. **deactivate()** → Widget temporarily removed from tree
+9. **dispose()** → Widget permanently destroyed. Clean up here (cancel subscriptions, dispose controllers)
+
+> Rule: initState for setup, dispose for cleanup — always.
+
+---
+
+## BuildContext
+
+BuildContext is a reference to a widget's position in the widget tree.
+
+- Every widget's `build()` receives a `context` parameter
+- Used to look up things in the tree: `Theme.of(context)`, `MediaQuery.of(context)`, `Navigator.of(context)`
+- Context knows where you are in the tree, so it can walk up and find what you need
+- NEVER store context and use it after an async gap — the widget might be gone by then
+- Always check `context.mounted` before using context after an await
+
+---
+
+## Material vs Cupertino Design
+
+**Material Design** → Google's design language. Looks like Android apps.  
+**Cupertino Design** → Apple's design language. Looks like iOS apps.
+
+- Flutter supports both — you can even mix them
+- `MaterialApp` → top-level widget for Material apps
+- `CupertinoApp` → top-level widget for iOS-style apps
+- Most apps start with MaterialApp (wider widget coverage, better documentation)
+
+---
+
+## Widget Tree
+
+Widgets are nested inside each other, forming a tree.
+
+- Parent widgets pass constraints DOWN to children
+- Children report their size UP to the parent
+- Parent decides the position of the child
+- Flutter walks this tree to build and update the UI
+- Extract large subtrees into their own widget classes for readability and reuse
+
+```
+MaterialApp → Scaffold → Column → [Text, Button, TextField]
+```
+
+---
+
+# PART 7 — Flutter Core Widgets
+
+---
+
+## Text Widget
+
+Displays a string on screen. The most basic display widget.
+
+- Style it with `TextStyle`: fontSize, fontWeight, color, letterSpacing, fontStyle, decoration
+- `textAlign` → align text within its container
+- `maxLines` → limit lines shown
+- `overflow: TextOverflow.ellipsis` → shows `...` when text doesn't fit
+- `RichText` → for text with MULTIPLE different styles in the same paragraph
+- `Theme.of(context).textTheme.headlineMedium` → use theme text styles for consistency
+
+---
+
+## Colors
+
+- `Colors.blue` → predefined Material colors
+- `Colors.blue[300]` → shade of a color (50 is lightest, 900 is darkest)
+- `Color(0xFF2196F3)` → custom color in hex (0xFF = fully opaque)
+- `Colors.black.withOpacity(0.5)` → semi-transparent
+- **Best practice**: prefer `Theme.of(context).colorScheme.primary` over hardcoded colors → respects light/dark mode and theming
+
+---
+
+## Container Widget
+
+The most versatile single-child widget. Like a `<div>` in HTML.
+
+- Can have: width, height, padding, margin, background color, border, border radius, shadow, gradient
+- `BoxDecoration` → full decoration: color, borderRadius, border, boxShadow, gradient
+- If you only need padding → use `Padding` widget (lighter)
+- If you only need color → use `ColoredBox` (even lighter)
+- Container tries to be as big as its parent if no child. As small as its child if child exists.
+
+**Padding vs Margin:**
+- `padding` → space INSIDE (between border and content)
+- `margin` → space OUTSIDE (between container and its surroundings)
+
+---
+
+## Column and Row Widgets
+
+Column → arranges children vertically. Row → arranges children horizontally.
+
+**Key properties (same for both):**
+- `mainAxisAlignment` → alignment along the main axis (Column: vertical, Row: horizontal)
+  - `start`, `center`, `end`, `spaceBetween`, `spaceAround`, `spaceEvenly`
+- `crossAxisAlignment` → alignment on the opposite axis
+  - `start`, `center`, `end`, `stretch`
+- `mainAxisSize: MainAxisSize.min` → shrink to fit children (instead of taking all available space)
+- Use `SizedBox(height: 16)` or `SizedBox(width: 16)` as spacers between children
+
+> Column's main axis is vertical. Row's main axis is horizontal. Keep this mental model clear.
+
+---
+
+## Scaffold Widget
+
+Scaffold provides the basic visual structure of a screen.
+
+- Every screen in a Flutter app typically has ONE Scaffold
+- Built-in slots: `appBar`, `body`, `floatingActionButton`, `drawer`, `bottomNavigationBar`
+- `backgroundColor` → sets the screen background color
+- Think of Scaffold as the frame of a page
+
+---
+
+## AppBar Widget
+
+The top navigation bar of a screen.
+
+- `title` → widget shown in the center/left of the bar
+- `centerTitle: true` → center the title
+- `leading` → widget on the left (usually back button or menu icon)
+- `actions` → list of widgets on the right (search, more options, etc.)
+- `elevation` → shadow below the bar (0 = flat, no shadow)
+- `bottom` → space to add a TabBar below the AppBar
+
+---
+
+## TextField Widget
+
+The primary input widget for user text entry.
+
+- Attach a `TextEditingController` to read what the user typed
+- `keyboardType` → what keyboard layout to show (number, email, text, etc.)
+- `obscureText: true` → for password fields (hides characters)
+- `onChanged` → callback fires on every keystroke
+- `onSubmitted` → callback fires when user presses Enter/Done
+- `InputDecoration` → controls the visual appearance: hint text, label, icons, border, fill color
+- **IMPORTANT**: Always call `controller.dispose()` in `dispose()` → prevents memory leaks
+
+---
+
+## Buttons in Flutter
+
+**TextButton** → flat, no background, no elevation. Good for secondary actions.  
+**ElevatedButton** → has a filled background with elevation. Good for primary actions.  
+**OutlinedButton** → has a border outline but no fill. Good for secondary/cancel actions.  
+**IconButton** → just an icon, tappable. Used in AppBars, lists.  
+**FloatingActionButton (FAB)** → floating circle button, usually one per screen.
+
+- All buttons: `onPressed: null` → disables the button automatically
+- All buttons have `.styleFrom()` for styling: `backgroundColor`, `foregroundColor`, `shape`, `padding`
+- `ElevatedButton.icon()` → button with an icon AND text combined
+
+---
+
+## Padding Widget
+
+Adds space around a single child widget.
+
+- Simpler and cheaper than Container when you ONLY need padding
+- Use `EdgeInsets` for the padding value:
+  - `.all(16)` → same on all 4 sides
+  - `.symmetric(horizontal: 24, vertical: 12)` → different horizontal/vertical
+  - `.only(left: 8, top: 4)` → specific sides only
+  - `.fromLTRB(left, top, right, bottom)` → all 4 manually
+
+---
+
+## GestureDetector & InkWell
+
+These detect taps and other gestures on any widget.
+
+**GestureDetector:**
+- Wraps any widget to detect: `onTap`, `onLongPress`, `onDoubleTap`, `onPanUpdate`, etc.
+- No visual feedback (no ripple or animation)
+
+**InkWell:**
+- Material-style ripple effect when tapped
+- Use this inside a Scaffold/Material for proper visual feedback
+- Add `borderRadius` to make the ripple match rounded corners
+
+> Rule: Use InkWell for list items and cards where you want a ripple. GestureDetector for custom gestures or when visual feedback isn't needed.
+
+---
+
+## Card Widget
+
+A Material card — white surface with elevation and rounded corners.
+
+- `elevation` → how much shadow (depth effect)
+- `shape` → usually `RoundedRectangleBorder`
+- Cards don't have padding built in — wrap content in `Padding` inside the card
+
+---
+
+## Stack Widget
+
+Places widgets on top of each other (Z-axis layering).
+
+- Children later in the list appear on top
+- Use `Positioned` widget inside Stack to place children at specific coordinates
+- Use for: overlapping elements, image with text on top, floating badges
+
+---
+
+## SingleChildScrollView
+
+Makes its content scrollable when it overflows the screen.
+
+- Wraps a Column (or other widget) that might be taller than the screen
+- `scrollDirection: Axis.vertical` (default) or `Axis.horizontal`
+- Different from ListView — here the entire content is built at once (not lazy)
+
+---
+
+## ListView.builder
+
+Efficiently renders a list with many items.
+
+- `itemCount` → total number of items
+- `itemBuilder` → function called with index, returns the widget for that item
+- **Lazy** → only builds items currently visible on screen. Efficient for large lists.
+- Difference from `Column`: Column builds ALL children at once. ListView.builder builds on demand.
+
+**ListTile** → pre-built list item widget:
+- `leading` → widget on the left (icon, avatar)
+- `title` → main text
+- `subtitle` → secondary text below title
+- `trailing` → widget on the right (icon, text, checkbox)
+- `onTap` → tap handler
+
+---
+
+## ClipRRect
+
+Clips its child to a rounded rectangle — use to round the corners of images.
+
+- `borderRadius: BorderRadius.circular(12)` → rounded corners
+- Useful when wrapping `Image.network` to make it rounded
+
+---
+
+## BackdropFilter & ImageFilter
+
+Creates a blur/frosted glass effect on widgets behind it.
+
+- Must be placed inside a Stack — there must be something behind it to blur
+- `ImageFilter.blur(sigmaX: 10, sigmaY: 10)` → controls blur intensity
+- Use with a semi-transparent Container on top for the frosted glass look
+
+---
+
+## Expanded & Flexible
+
+Both are used inside Row or Column to control how children share available space.
+
+- **Expanded** → forces the child to fill ALL remaining space along the main axis
+- **Flexible** → child can take UP TO the available space but can be smaller
+- `flex` parameter → defines the ratio of space taken (flex: 2 takes twice as much as flex: 1)
+
+---
+
+## SafeArea
+
+Pads content to avoid system UI overlaps (status bar, notch, home indicator).
+
+- Always use SafeArea on screens that go edge-to-edge
+- Prevents content from being hidden behind device notches or the bottom nav bar
+
+---
+
+## IndexedStack
+
+Shows only one child at a time by index, but keeps all others alive in memory.
+
+- Unlike PageView, ALL children are built — just only one is visible
+- State is preserved when switching between pages
+- Used with BottomNavigationBar to prevent state loss when switching tabs
+
+---
+
+## BottomNavigationBar
+
+The bottom tab bar — lets users switch between main sections of the app.
+
+- `currentIndex` → which tab is active
+- `onTap` → callback when user taps a tab, gives you the new index
+- `items` → list of `BottomNavigationBarItem` (icon + label for each tab)
+- Use with IndexedStack to preserve state across tabs
+
+---
+
+## FutureBuilder
+
+A widget that rebuilds itself based on the state of a Future.
+
+- Used to show loading spinner while data is being fetched, then the actual data
+- `future` → the Future to listen to
+- `builder` → function that returns different widgets based on `snapshot.connectionState`
+- `snapshot.connectionState` states: `waiting` → `done`
+- `snapshot.hasData` → true when data is ready
+- `snapshot.hasError` → true when an error occurred
+- `snapshot.data` → the actual value (once done)
+
+> Pattern: If waiting → show CircularProgressIndicator. If error → show error text. If data → show UI.
+
+---
+
+## StreamBuilder
+
+Like FutureBuilder but for Streams — rebuilds every time the stream emits a new value.
+
+- Same snapshot-based API as FutureBuilder
+- `connectionState` adds `active` → means stream is live and emitting
+
+---
+
+## PlaceHolder Widget
+
+A development helper widget — shows a box with an X inside.
+
+- Use while building a UI to mark sections you haven't built yet
+- Replace with real widgets once ready
+
+---
+
+## Chip Widget
+
+Small, compact UI elements for tags, filters, selections.
+
+- `Chip` → basic chip (read-only label)
+- `FilterChip` → selectable chip (selected/unselected state)
+- `ActionChip` → chip with a tap action
+- `InputChip` → chip with a delete button
+
+---
+
+## Image Widget
+
+Displays images from different sources.
+
+- `Image.network(url)` → load from internet
+- `Image.asset(path)` → load from project assets (declare in pubspec.yaml)
+- `fit: BoxFit.cover` → fill the box, may crop
+- `fit: BoxFit.contain` → fit inside, may letterbox
+- `loadingBuilder` → show a placeholder while loading
+- `errorBuilder` → show something if image fails to load
+- `ClipRRect` wrapper → add rounded corners to the image
+
+---
+
+# PART 8 — Currency Converter App
+
+---
+
+## Project Setup
+
+- `flutter create currency_converter` → creates the project
+- Clean out the default boilerplate in `main.dart`
+- File structure: keep `main.dart` for the entry point, extract screens into separate files
+
+---
+
+## App Concepts Used
+
+**MaterialApp** → root widget that sets up theme and the first screen  
+**Scaffold** → gives the screen its structure (AppBar + body)  
+**StatefulWidget** → needed because the result updates when user taps Convert  
+**TextEditingController** → reads the amount the user typed  
+**DropdownButton** → lets user pick target currency from a list  
+**ElevatedButton** → triggers the conversion  
+**setState()** → updates the result displayed on screen  
+
+---
+
+## Key Logic
+
+- Store conversion rates in a `Map<String, double>` → maps currency code to rate
+- On button press: read controller text → parse to double → multiply by rate → setState
+- Display result with `.toStringAsFixed(2)` → formats to 2 decimal places
+- Always dispose the TextEditingController in `dispose()`
+
+---
+
+## Things Learned from This Project
+
+- How StatefulWidget + setState works in practice
+- How to read and clear TextField values
+- How to use DropdownButton with dynamic items from a list
+- How layout widgets (Column, Padding, SizedBox) compose a full screen
+- Why dispose() matters for memory management
+
+---
+
+# PART 9 — Weather App
+
+---
+
+## Project Concepts
+
+This project is bigger — it introduces real API calls, JSON parsing, and async UI.
+
+---
+
+## http Package
+
+- Add to `pubspec.yaml`: `http: ^1.2.0`
+- Import: `import 'package:http/http.dart' as http`
+- `http.get(Uri.parse(url))` → makes a GET request, returns a Future
+- `response.statusCode` → HTTP status (200 = OK, 404 = not found, etc.)
+- `response.body` → the raw response text (usually JSON)
+- `jsonDecode(response.body)` → converts JSON string to a Dart Map
+
+> Always check statusCode before using the response. If it's not 200, throw an error.
+
+---
+
+## Working with APIs
+
+- OpenWeatherMap gives weather data as JSON at a URL with your API key
+- JSON is just a Map in Dart — access data with `json['key']` and `json['nested']['key']`
+- For lists in JSON: `(json['list'] as List).map(...).toList()`
+- Create a model class to represent the data cleanly
+
+---
+
+## Handling Future in initState
+
+- Don't `await` directly inside `initState` — it returns void
+- Instead, store the Future in a variable and pass it to FutureBuilder
+- FutureBuilder handles the loading/error/done states for you automatically
+
 ```dart
-// Absolute (package import)
-import 'package:my_app/screens/home_screen.dart';
+late Future<WeatherData> _weatherFuture;
 
-// Relative
-import '../widgets/my_button.dart';
-```
-- Flutter VS Code extension auto-imports on paste/type.
-- Organize by feature or type: `screens/`, `widgets/`, `models/`, `services/`.
-
----
-
-# PART 7: FLUTTER CORE WIDGETS
-
-## 09:43:31 — Column Widget
-```dart
-Column(
-  mainAxisAlignment: MainAxisAlignment.center,    // vertical alignment
-  crossAxisAlignment: CrossAxisAlignment.start,   // horizontal alignment
-  mainAxisSize: MainAxisSize.min,                 // shrink-wrap or expand
-  children: [
-    Text('Item 1'),
-    SizedBox(height: 8),    // spacing
-    Text('Item 2'),
-  ],
-)
-```
-- Column: vertical axis = main axis.
-- Row: horizontal axis = main axis.
-- `SizedBox` is the idiomatic spacer.
-
----
-
-## 09:52:10 — ColoredBox Widget
-```dart
-ColoredBox(
-  color: Colors.blue,
-  child: Text('Hello'),
-)
-// Lightweight — only fills color, no padding/margins
-// Use Container when you need more: padding, margin, border, etc.
-```
-
----
-
-## 09:53:01 — Color Class
-```dart
-Colors.blue            // Material color
-Colors.blue[300]       // shade (50 to 900)
-Colors.blue.shade200
-
-Color(0xFF2196F3)      // ARGB hex
-Color.fromARGB(255, 33, 150, 243)
-Color.fromRGBO(33, 150, 243, 1.0)
-
-// Opacity
-Colors.black.withOpacity(0.5)
-Colors.blue.withAlpha(128)
-```
-
----
-
-## 09:56:53 — TextStyle
-```dart
-TextStyle(
-  fontSize: 18,
-  fontWeight: FontWeight.w600,    // w100 to w900, bold = w700
-  color: Colors.black87,
-  fontFamily: 'Roboto',
-  letterSpacing: 0.5,
-  wordSpacing: 2.0,
-  height: 1.5,                    // line height multiplier
-  fontStyle: FontStyle.italic,
-  decoration: TextDecoration.underline,
-  decorationColor: Colors.blue,
-  shadows: [Shadow(blurRadius: 4, color: Colors.grey)],
-)
-
-// Inherit and override from theme
-Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.red)
-```
-
----
-
-## 10:04:22 — Colors (Theme Integration)
-```dart
-// Prefer theme colors over hardcoded ones
-Theme.of(context).colorScheme.primary
-Theme.of(context).colorScheme.surface
-Theme.of(context).colorScheme.onPrimary
-
-// ColorScheme generation
-ColorScheme.fromSeed(seedColor: Colors.green)
-```
-
----
-
-## 10:06:49 — TextField Widget
-```dart
-final TextEditingController _controller = TextEditingController();
-
-TextField(
-  controller: _controller,
-  keyboardType: TextInputType.number,
-  decoration: InputDecoration(
-    labelText: 'Amount',
-    hintText: 'Enter amount',
-    prefixIcon: Icon(Icons.attach_money),
-    suffixText: 'USD',
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-    ),
-    filled: true,
-    fillColor: Colors.grey[100],
-  ),
-  onChanged: (value) => print(value),     // fires on every keystroke
-  onSubmitted: (value) => print(value),   // fires on submit/enter
-  maxLength: 10,
-  obscureText: true,    // for passwords
-)
-
-// Accessing value
-String text = _controller.text;
-
-// Clearing
-_controller.clear();
-
-// Dispose controller to prevent memory leaks
-@override
-void dispose() {
-  _controller.dispose();
-  super.dispose();
-}
-```
-
----
-
-## 10:48:00 — Why Build Function Should Contain NO Complex Tasks
-- `build()` can be called **many times** — on every frame if needed.
-- Never do: HTTP calls, heavy computations, database queries in `build()`.
-- Do in `build()`: Read state, construct widget tree.
-- Do in `initState()` / event handlers / providers: fetch data, run logic.
-
----
-
-## 10:53:12 — Padding & Container Widget
-```dart
-// Padding — only adds space around child
-Padding(
-  padding: const EdgeInsets.all(16),
-  child: Text('Padded'),
-)
-
-EdgeInsets.all(16)
-EdgeInsets.symmetric(horizontal: 24, vertical: 12)
-EdgeInsets.only(left: 8, top: 4)
-EdgeInsets.fromLTRB(8, 4, 8, 4)
-
-// Container — the "Swiss Army knife" widget
-Container(
-  width: 200,
-  height: 100,
-  padding: const EdgeInsets.all(16),
-  margin: const EdgeInsets.only(bottom: 8),
-  decoration: BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(12),
-    border: Border.all(color: Colors.grey.shade300),
-    boxShadow: [
-      BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 2))
-    ],
-    gradient: LinearGradient(colors: [Colors.blue, Colors.purple]),
-  ),
-  child: Text('Hello'),
-)
-```
-
----
-
-## 11:02:01 — Padding vs Margin
-- `padding`: Space INSIDE the container (between border and content).
-- `margin` (via Container): Space OUTSIDE the container (between container and surroundings).
-- `Padding` widget = only padding, no background/decoration.
-- `Container` = padding + margin + decoration + sizing all in one.
-
----
-
-## 11:07:56 — TextButton Widget
-```dart
-TextButton(
-  onPressed: () {},
-  style: TextButton.styleFrom(
-    foregroundColor: Colors.blue,
-    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-    textStyle: const TextStyle(fontSize: 16),
-  ),
-  child: const Text('Click Me'),
-)
-```
-
----
-
-## 11:13:35 — Flutter Lints
-- `flutter_lints` package enforces best practices.
-- `analysis_options.yaml` configures lint rules.
-- Common lint: use `const` where possible, prefer `final`, avoid print in production.
-
----
-
-## 11:34:29 — ElevatedButton Widget
-```dart
-ElevatedButton(
-  onPressed: () {},
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.blue,
-    foregroundColor: Colors.white,
-    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-    elevation: 4,
-  ),
-  child: const Text('Submit'),
-)
-
-// With icon
-ElevatedButton.icon(
-  onPressed: () {},
-  icon: const Icon(Icons.send),
-  label: const Text('Send'),
-)
-```
-
----
-
-## 11:44:26 — AppBar Widget
-```dart
-AppBar(
-  title: const Text('My App'),
-  centerTitle: true,
-  leading: IconButton(icon: const Icon(Icons.menu), onPressed: () {}),
-  actions: [
-    IconButton(icon: const Icon(Icons.search), onPressed: () {}),
-    IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
-  ],
-  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-  elevation: 0,
-  bottom: TabBar(...),    // for tabbed interface
-)
-```
-
----
-
-## 11:51:47 — StatefulWidget
-```dart
-class CounterPage extends StatefulWidget {
-  const CounterPage({super.key});
-
-  @override
-  State<CounterPage> createState() => _CounterPageState();
-}
-
-class _CounterPageState extends State<CounterPage> {
-  int _count = 0;    // mutable state lives here
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text('$_count', style: const TextStyle(fontSize: 48)),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => setState(() => _count++),
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
-```
-- `StatefulWidget`: Immutable configuration.
-- `State<T>`: Mutable state that persists across rebuilds.
-- Always access widget properties via `widget.propertyName` inside State.
-
----
-
-## 12:24:38 — Build Function Can Be Called How Many Times?
-- `build()` can be called on every `setState()`, parent rebuild, or theme change.
-- Flutter is optimized for this — cheap widget creation is by design.
-- Avoid expensive work in `build()`.
-
----
-
-## 12:27:11 — setState
-```dart
-setState(() {
-  _counter++;           // wrap all state mutations in setState()
-  _items.add('new');
-});
-// setState: marks widget as dirty → schedules rebuild → build() is called
-```
-- Only call `setState()` when something changed AND you want the UI to reflect it.
-- Don't call `setState()` in `build()`, `dispose()`, or after widget is unmounted.
-
----
-
-## 12:41:19 — CupertinoApp & iOS Styled Widgets
-```dart
-// Use CupertinoApp for full iOS experience
-CupertinoApp(
-  theme: CupertinoThemeData(primaryColor: CupertinoColors.activeBlue),
-  home: CupertinoPageScaffold(
-    navigationBar: CupertinoNavigationBar(middle: Text('iOS App')),
-    child: CupertinoButton(onPressed: () {}, child: Text('Press')),
-  ),
-)
-
-// iOS-only widgets
-CupertinoSlider, CupertinoSwitch, CupertinoDatePicker
-CupertinoAlertDialog, CupertinoActionSheet
-```
-
----
-
-## 12:59:14 — initState and dispose
-```dart
-@override
-void initState() {
-  super.initState();
-  // Called once when widget is inserted into the tree
-  // Use for: initial data fetch, subscriptions, animation controllers
-  _fetchData();
-  _controller = AnimationController(vsync: this, duration: Duration(seconds: 1));
-}
-
-@override
-void dispose() {
-  // Called when widget is permanently removed from the tree
-  // Use for: cancel subscriptions, dispose controllers, close streams
-  _controller.dispose();
-  _textController.dispose();
-  _subscription.cancel();
-  super.dispose();    // always call super last
-}
-```
-
----
-
-## 13:02:05 — Recap & Widget Lifecycle
-```
-Constructor → createState() → initState() → build() → [setState → build()]* → deactivate() → dispose()
-```
-- `didUpdateWidget()`: Called when parent passes new config to this widget.
-- `didChangeDependencies()`: Called when `InheritedWidget` dependency changes.
-
----
-
-# PART 8: WEATHER APP
-
-## 13:09:53 — Weather App Demo
-Full app using: REST API, JSON parsing, async/await, dynamic UI.
-
----
-
-## 13:26:48 — GestureDetector & InkWell Widget
-```dart
-// GestureDetector — detects any gesture, no visual feedback
-GestureDetector(
-  onTap: () {},
-  onLongPress: () {},
-  onDoubleTap: () {},
-  onPanUpdate: (details) {},
-  child: Container(...),
-)
-
-// InkWell — Material ripple effect on tap
-InkWell(
-  onTap: () {},
-  borderRadius: BorderRadius.circular(8),
-  child: Container(...),
-)
-```
-
----
-
-## 13:29:20 — IconButton Widget
-```dart
-IconButton(
-  icon: const Icon(Icons.refresh),
-  onPressed: () {},
-  tooltip: 'Refresh',
-  iconSize: 28,
-  color: Colors.white,
-)
-```
-
----
-
-## 13:30:17 — PlaceHolder Widget
-```dart
-// Shows a box with an X — useful during development
-Placeholder(
-  color: Colors.red,
-  fallbackHeight: 200,
-)
-```
-
----
-
-## 13:34:22 — Card Widget
-```dart
-Card(
-  elevation: 4,
-  margin: const EdgeInsets.all(8),
-  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-  color: Colors.white,
-  child: Padding(
-    padding: const EdgeInsets.all(16),
-    child: Text('Card content'),
-  ),
-)
-```
-
----
-
-## 13:45:35 — ClipRRect Widget
-```dart
-// Clips child to rounded rectangle
-ClipRRect(
-  borderRadius: BorderRadius.circular(12),
-  child: Image.network('https://...'),
-)
-```
-
----
-
-## 13:47:01 — Backdrop and ImageFilter Widget
-```dart
-// Blur/frosted glass effect
-BackdropFilter(
-  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-  child: Container(
-    color: Colors.white.withOpacity(0.1),
-    child: Text('Frosted Glass'),
-  ),
-)
-// Must be placed inside a Stack with background behind it
-```
-
----
-
-## 13:58:14 — Row Widget
-```dart
-Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  crossAxisAlignment: CrossAxisAlignment.center,
-  children: [
-    Text('Left'),
-    Expanded(child: Text('Center — takes remaining space')),
-    Text('Right'),
-  ],
-)
-```
-
----
-
-## 14:07:49 — SingleChildScrollView Widget
-```dart
-SingleChildScrollView(
-  scrollDirection: Axis.vertical,    // or Axis.horizontal
-  child: Column(
-    children: [...many items...],
-  ),
-)
-```
-
----
-
-## 14:25:07 — Passing Arguments
-```dart
-// Between screens via constructor
-Navigator.push(context, MaterialPageRoute(
-  builder: (_) => DetailsPage(itemId: 42, title: 'My Item'),
-));
-
-// In DetailsPage
-class DetailsPage extends StatelessWidget {
-  final int itemId;
-  final String title;
-  const DetailsPage({super.key, required this.itemId, required this.title});
-  // ...
-}
-```
-
----
-
-## 14:35:02 — http Plugin in Flutter
-```yaml
-# pubspec.yaml
-dependencies:
-  http: ^1.2.0
-```
-```dart
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-Future<Map<String, dynamic>> fetchData(String url) async {
-  final response = await http.get(Uri.parse(url));
-
-  if (response.statusCode == 200) {
-    return jsonDecode(response.body) as Map<String, dynamic>;
-  } else {
-    throw Exception('Failed to load data: ${response.statusCode}');
-  }
-}
-```
-
----
-
-## 14:38:12 — OpenMapWeather API
-```dart
-// Base URL: api.openweathermap.org/data/2.5/forecast
-const String apiKey = 'YOUR_API_KEY';
-final url = Uri.parse(
-  'https://api.openweathermap.org/data/2.5/forecast?q=London&APPID=$apiKey'
-);
-```
-
----
-
-## 14:44:57 — Handling Future in initState
-```dart
 @override
 void initState() {
   super.initState();
-  _weatherFuture = _fetchWeather();   // store the future, don't await here
-}
-
-Future<WeatherData> _fetchWeather() async {
-  final data = await weatherService.getWeather('London');
-  return data;
+  _weatherFuture = fetchWeather();  // store, don't await
 }
 ```
 
 ---
 
-## 14:48:05 — Extracting Data from API
-```dart
-final jsonData = jsonDecode(response.body);
-final temperature = jsonData['main']['temp'];
-final description = jsonData['weather'][0]['description'];
-final icon = jsonData['weather'][0]['icon'];
-final forecast = (jsonData['list'] as List)
-    .map((item) => ForecastItem.fromJson(item))
-    .toList();
-```
+## FutureBuilder Pattern
+
+The standard pattern for API-driven screens:
+1. Fetch returns a Future
+2. Pass Future to FutureBuilder
+3. FutureBuilder shows spinner while waiting
+4. Shows data when done
+5. Shows error message if it fails
+
+This keeps your UI code clean and declarative.
 
 ---
 
-## 15:01:22 — Loading Indicator
-```dart
-// Circular progress
-const CircularProgressIndicator()
-CircularProgressIndicator(color: Colors.white)
+## Passing Arguments Between Screens
 
-// Linear progress
-const LinearProgressIndicator()
-```
+- Pass data to a new screen via its constructor parameters
+- The receiving screen declares them as `final` fields
+- `Navigator.push` creates the screen and passes the data right there
 
 ---
 
-## 15:06:55 — FutureBuilder Widget
-```dart
-FutureBuilder<WeatherData>(
-  future: _weatherFuture,
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return const CircularProgressIndicator();
-    }
-    if (snapshot.hasError) {
-      return Text('Error: ${snapshot.error}');
-    }
-    if (snapshot.hasData) {
-      return WeatherDisplay(data: snapshot.data!);
-    }
-    return const Text('No data');
-  },
-)
-```
+## intl Package for Date Formatting
+
+- `intl: ^0.19.0` → add to pubspec
+- `DateFormat('MMM dd, yyyy').format(dateTime)` → "Feb 23, 2026"
+- `DateFormat('EEEE').format(dateTime)` → "Monday"
+- `DateTime.parse(isoString)` → parses an ISO 8601 date string into a DateTime object
 
 ---
 
-## 15:19:28 — AsyncSnapshot
-| Property | Meaning |
-|----------|---------|
-| `snapshot.connectionState` | `none`, `waiting`, `active`, `done` |
-| `snapshot.hasData` | true if data is available |
-| `snapshot.hasError` | true if an error occurred |
-| `snapshot.data` | the resolved value (nullable) |
-| `snapshot.error` | the error object |
+# PART 10 — Flutter Internals
 
 ---
 
-## 15:39:42 — ListView.builder Widget
-```dart
-ListView.builder(
-  itemCount: items.length,
-  itemBuilder: (context, index) {
-    return ListTile(
-      title: Text(items[index].name),
-      subtitle: Text(items[index].description),
-      leading: Icon(Icons.cloud),
-      trailing: Text('${items[index].temp}°'),
-      onTap: () {},
-    );
-  },
-)
-// .builder is lazy — only builds visible items (efficient for long lists)
-```
+## Layout Principle: Constraints Go Down, Sizes Go Up
+
+This is the MOST important concept to understand how Flutter layouts work.
+
+- **Parent sends constraints DOWN** → "you can be at most this wide and this tall"
+- **Child decides its own size** → within those constraints
+- **Child reports size UP** to parent
+- **Parent positions the child**
+
+This explains a lot of confusing behavior:
+- Why Column stretches children vertically by default
+- Why an unbounded Container crashes
+- Why Expanded only works inside Row/Column
 
 ---
 
-## 15:50:23 — Date Formatting using intl
-```yaml
-dependencies:
-  intl: ^0.19.0
-```
-```dart
-import 'package:intl/intl.dart';
+## Flutter's 3 Trees
 
-DateTime now = DateTime.now();
-DateFormat('MMM dd, yyyy').format(now);        // "Feb 23, 2026"
-DateFormat('EEEE').format(now);                // "Monday"
-DateFormat('hh:mm a').format(now);             // "02:30 PM"
-DateFormat('dd/MM/yyyy HH:mm').format(now);
+Flutter maintains 3 parallel trees at all times:
 
-// Parse
-DateTime.parse('2026-02-23T14:30:00');
-```
+| Tree | What it is | Rebuilt? |
+|------|-----------|---------|
+| **Widget Tree** | Dart code you write — immutable config | Every setState |
+| **Element Tree** | Live instances that glue widgets to render objects | Reused when possible |
+| **RenderObject Tree** | Handles layout, paint, hit testing | Only when necessary |
 
----
+- Widget tree rebuilds frequently — cheap, just Dart objects
+- Element tree is smart — reuses elements to avoid full rebuilds
+- RenderObject tree changes only when actual layout/paint changes needed
 
-# PART 9: FLUTTER INTERNALS
-
-## 16:05:35 — Layout Principle in Flutter Explained
-- **Constraints go DOWN, sizes go UP, parent sets position.**
-- Parent passes `BoxConstraints(minWidth, maxWidth, minHeight, maxHeight)` to child.
-- Child decides its own size within those constraints.
-- Parent positions the child.
-- This is why some widgets expand, some shrink, and some cause errors when unconstrained.
+- `BuildContext` is actually an `Element` — that's why it knows where in the tree you are
+- This 3-tree architecture is what makes Flutter performant despite frequent rebuilds
 
 ---
 
-## 16:10:57 — Flutter Behind the Scenes: 3 Trees & BuildContext
-Flutter maintains 3 trees simultaneously:
+## InheritedWidget
 
-| Tree | Role |
-|------|------|
-| **Widget Tree** | Immutable descriptions (what you write in Dart) |
-| **Element Tree** | Live instances linking widget config to render objects; persists across rebuilds |
-| **RenderObject Tree** | Handles layout, painting, hit testing |
+InheritedWidget is Flutter's mechanism for passing data DOWN the tree without passing through every constructor.
 
-- `BuildContext` is actually an `Element` — it knows where in the tree a widget lives.
-- When you call `setState()`, Flutter diffs the widget tree, reuses elements where possible, and only updates what changed.
-- This is why Flutter is fast even with many rebuilds.
+- `Theme`, `MediaQuery`, `Navigator` all use InheritedWidget internally
+- When you call `Theme.of(context)`, Flutter walks UP the tree to find the nearest Theme widget
+- Widgets that read from an InheritedWidget only rebuild when that specific data changes
 
 ---
 
-# PART 10: SHOP APP
-
-## 16:32:15 — Shop App Demo
-A multi-screen e-commerce app. Covers: theming, navigation, state management (Provider), responsive UI.
+# PART 11 — Shop App
 
 ---
 
-## 16:33:32 — Project Setup (Fonts, Theme, ColorScheme)
-```dart
-// pubspec.yaml — fonts
-flutter:
-  fonts:
-    - family: Lato
-      fonts:
-        - asset: assets/fonts/Lato-Regular.ttf
-        - asset: assets/fonts/Lato-Bold.ttf
-          weight: 700
+## Project Overview
 
-// main.dart — theme
-ThemeData(
-  colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
-  useMaterial3: true,
-  fontFamily: 'Lato',
-  textTheme: const TextTheme(
-    headlineLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-  ),
-  cardTheme: CardTheme(elevation: 4, shape: RoundedRectangleBorder(...)),
-)
-```
+Multi-screen e-commerce app. Covers: custom theming, navigation, Provider state management, responsive UI.
 
 ---
 
-## 16:52:23 — SafeArea Widget
-```dart
-SafeArea(
-  child: Column(...),
-)
-// Adds padding to avoid notches, status bar, home indicator
-```
+## Custom Themes & Fonts
+
+- Declare custom fonts in `pubspec.yaml` under `flutter: fonts:`
+- Apply via `ThemeData.fontFamily: 'FontName'`
+- `ThemeData` → sets app-wide styling: colors, text styles, button styles, card styles
+- `ColorScheme.fromSeed(seedColor: Colors.orange)` → generates a full color palette from one color
+- Individual widgets inherit theme automatically — override only where needed with `.copyWith()`
 
 ---
 
-## 16:59:26 — Expanded Widget
-```dart
-Row(
-  children: [
-    Expanded(
-      flex: 2,   // takes 2/3 of space
-      child: Text('Left'),
-    ),
-    Expanded(
-      flex: 1,   // takes 1/3 of space
-      child: Text('Right'),
-    ),
-  ],
-)
-// Expanded forces child to fill available space along main axis
-// Flexible is like Expanded but allows child to be smaller
-```
+## Navigation
+
+Flutter's Navigator manages screens like a stack.
+
+- `Navigator.push(context, MaterialPageRoute(...))` → go to new screen (pushes on stack)
+- `Navigator.pop(context)` → go back (pops from stack)
+- `Navigator.pushReplacement(...)` → replace current screen (no back option)
+- `await Navigator.push(...)` → wait for screen to pop and get a returned value
+- Named routes → define routes in `MaterialApp.routes`, navigate by name string
+- State of a screen is kept in its `State` object → popping a screen destroys its state
+- This is why you need global state for data shared across multiple screens
 
 ---
 
-## 17:14:16 — Chip Widget
-```dart
-FilterChip(
-  label: Text('Electronics'),
-  selected: _selectedCategory == 'Electronics',
-  onSelected: (bool selected) {
-    setState(() => _selectedCategory = selected ? 'Electronics' : null);
-  },
-)
+## Provider — State Management
 
-Chip(label: Text('New'))
-ActionChip(label: Text('View All'), onPressed: () {})
-InputChip(label: Text('Tag'), onDeleted: () {}, avatar: Icon(Icons.tag))
-```
+Provider is a package for managing state that needs to be shared across multiple widgets/screens.
 
----
+**Why needed?**
+- `setState()` only rebuilds within ONE widget
+- If two screens need to share data (e.g., cart items), setState isn't enough
 
-## 17:30:17 — How Theming Works Behind the Scenes (InheritedWidget)
-- `Theme`, `MediaQuery`, `Navigator` all use `InheritedWidget` under the hood.
-- `InheritedWidget` propagates data down the tree efficiently.
-- Widgets that read from an `InheritedWidget` rebuild only when that data changes.
-- `Theme.of(context)` walks up the tree to find the nearest `Theme` widget.
+**How it works:**
+- Create a class extending `ChangeNotifier` → this is your "store" of shared state
+- Call `notifyListeners()` inside it whenever data changes → triggers rebuilds in all listeners
+- Wrap the top of your app with `ChangeNotifierProvider` to make it available everywhere
+- `context.watch<CartProvider>()` → reads data AND rebuilds when it changes
+- `context.read<CartProvider>()` → reads data WITHOUT subscribing to rebuilds
+- `context.select<CartProvider, int>((c) => c.count)` → rebuild only when this specific value changes
+- `MultiProvider` → wrap multiple providers at once
+
+> Mental model: ChangeNotifier is like a radio station. Widgets that `.watch()` are tuned in. When you `notifyListeners()`, all tuned-in widgets get the broadcast and update.
 
 ---
 
-## 17:38:40 — Images and Dummy Data
-```dart
-// Network image
-Image.network(
-  'https://example.com/image.jpg',
-  width: 200,
-  height: 200,
-  fit: BoxFit.cover,
-  loadingBuilder: (ctx, child, progress) =>
-      progress == null ? child : CircularProgressIndicator(),
-  errorBuilder: (ctx, err, stack) => Icon(Icons.broken_image),
-)
+## SnackBar
 
-// Asset image
-Image.asset('assets/images/product.png', fit: BoxFit.contain)
+A temporary message that appears at the bottom of the screen.
 
-// Declare in pubspec.yaml:
-// flutter:
-//   assets:
-//     - assets/images/
-
-// BoxFit values
-BoxFit.cover    // fill, may crop
-BoxFit.contain  // fit inside, may letterbox
-BoxFit.fill     // stretch to fill
-BoxFit.fitWidth / .fitHeight
-```
+- `ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(...)))` 
+- Auto-dismisses after a duration
+- Can have an action button (e.g., "UNDO")
+- Use `ScaffoldMessenger` (not just Scaffold) — it persists across navigations
 
 ---
 
-## 18:37:33 — Navigation & Routing
-```dart
-// Push (go to new screen)
-Navigator.of(context).push(
-  MaterialPageRoute(builder: (_) => const DetailsPage()),
-);
+## Dialogs
 
-// Pop (go back)
-Navigator.of(context).pop();
-Navigator.of(context).pop(result);   // return data to previous screen
+Pop-up overlays for user decisions or important messages.
 
-// Push and remove previous
-Navigator.of(context).pushReplacement(
-  MaterialPageRoute(builder: (_) => const HomePage()),
-);
-
-// Named routes
-Navigator.of(context).pushNamed('/details', arguments: {'id': 42});
-
-// Receive result
-final result = await Navigator.of(context).push(...);
-```
+- `showDialog()` → shows an `AlertDialog` in the center of the screen
+- `showModalBottomSheet()` → slides up from the bottom
+- Both are awaitable — `final result = await showDialog(...)` → get user's choice
+- Return data from dialogs via `Navigator.pop(ctx, result)` inside the dialog
 
 ---
 
-## 18:48:20 — How Navigator Works Behind the Scenes
-- Navigator maintains a **stack** of Routes (pages).
-- Each Route can push/pop from the stack.
-- `BuildContext` is key — Navigator.of(context) finds the nearest Navigator in the tree.
-- State management: each Route is a widget with its own state; popping removes it and its state.
-- This is why you need global state management (Provider, Riverpod, Bloc) for data shared across screens.
+# PART 12 — Responsive UI
 
 ---
 
-## 18:59:59 — BottomNavigationBar Widget
-```dart
-BottomNavigationBar(
-  currentIndex: _currentIndex,
-  onTap: (index) => setState(() => _currentIndex = index),
-  items: const [
-    BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-    BottomNavigationBarItem(icon: Icon(Icons.shop), label: 'Shop'),
-    BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
-  ],
-  selectedItemColor: Colors.orange,
-  type: BottomNavigationBarType.fixed,
-)
-```
+## MediaQuery
+
+MediaQuery gives information about the current device screen.
+
+- `MediaQuery.of(context).size.width` → screen width in logical pixels
+- `MediaQuery.of(context).size.height` → screen height
+- `MediaQuery.of(context).padding` → system padding (status bar, notch)
+- `MediaQuery.of(context).viewInsets` → keyboard height when visible
+- `MediaQuery.of(context).orientation` → portrait or landscape
+- Use screen width to make layout decisions: `width >= 600 ? TabletLayout() : MobileLayout()`
 
 ---
 
-## 19:09:10 — IndexedStack Widget
-```dart
-IndexedStack(
-  index: _currentIndex,  // only shows the child at this index
-  children: const [
-    HomePage(),
-    ShopPage(),
-    CartPage(),
-  ],
-)
-// Unlike PageView, IndexedStack preserves state of all pages
-// All children are built at once, but only one is visible
-```
+## LayoutBuilder
 
----
+LayoutBuilder gives you the PARENT widget's constraints — not the full screen size.
 
-## 19:11:59 — Designing Cart Page (ListTile Widget)
-```dart
-ListTile(
-  leading: CircleAvatar(backgroundImage: NetworkImage(product.imageUrl)),
-  title: Text(product.name),
-  subtitle: Text('\$${product.price}'),
-  trailing: IconButton(icon: Icon(Icons.delete), onPressed: () {}),
-  onTap: () {},
-  contentPadding: EdgeInsets.symmetric(horizontal: 16),
-)
-```
+- Useful inside reusable widgets that don't know their parent size ahead of time
+- `constraints.maxWidth` → max width the parent allows
+- `constraints.maxHeight` → max height the parent allows
 
----
+**MediaQuery vs LayoutBuilder:**
 
-## 19:22:38 — State Management with Provider & SnackBar
-```yaml
-dependencies:
-  provider: ^6.1.2
-```
-```dart
-// Model (ChangeNotifier)
-class CartProvider extends ChangeNotifier {
-  final List<Product> _items = [];
-
-  List<Product> get items => List.unmodifiable(_items);
-  int get count => _items.length;
-  double get total => _items.fold(0, (sum, item) => sum + item.price);
-
-  void addItem(Product product) {
-    _items.add(product);
-    notifyListeners();   // triggers rebuild in all listeners
-  }
-
-  void removeItem(Product product) {
-    _items.remove(product);
-    notifyListeners();
-  }
-}
-
-// Provide at top of tree
-MultiProvider(
-  providers: [
-    ChangeNotifierProvider(create: (_) => CartProvider()),
-    ChangeNotifierProvider(create: (_) => ProductsProvider()),
-  ],
-  child: const MyApp(),
-)
-
-// Read (no rebuild)
-context.read<CartProvider>().addItem(product);
-
-// Watch (rebuilds on change)
-final cart = context.watch<CartProvider>();
-
-// Select (rebuild only when specific field changes)
-final count = context.select<CartProvider, int>((c) => c.count);
-```
-
-**SnackBar:**
-```dart
-ScaffoldMessenger.of(context).showSnackBar(
-  SnackBar(
-    content: const Text('Item added to cart'),
-    action: SnackBarAction(label: 'UNDO', onPressed: () {}),
-    duration: const Duration(seconds: 3),
-  ),
-);
-```
-
----
-
-## 19:51:20 — Dialogs in Flutter
-```dart
-// Alert Dialog
-showDialog(
-  context: context,
-  builder: (ctx) => AlertDialog(
-    title: const Text('Confirm Delete'),
-    content: const Text('Are you sure you want to remove this item?'),
-    actions: [
-      TextButton(
-        onPressed: () => Navigator.of(ctx).pop(false),
-        child: const Text('Cancel'),
-      ),
-      ElevatedButton(
-        onPressed: () => Navigator.of(ctx).pop(true),
-        child: const Text('Delete'),
-      ),
-    ],
-  ),
-);
-
-// Bottom Sheet
-showModalBottomSheet(
-  context: context,
-  shape: const RoundedRectangleBorder(
-    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-  ),
-  builder: (ctx) => SizedBox(
-    height: 300,
-    child: Column(children: [...]),
-  ),
-);
-```
-
----
-
-# PART 11: RESPONSIVE UI
-
-## 20:09:55 — Flutter Responsive UI (MediaQuery)
-```dart
-final size = MediaQuery.of(context).size;
-final width = size.width;
-final height = size.height;
-
-final padding = MediaQuery.of(context).padding;     // system padding (notch, status bar)
-final viewInsets = MediaQuery.of(context).viewInsets; // keyboard insets
-final orientation = MediaQuery.of(context).orientation;
-
-// Responsive sizing
-Container(
-  width: width * 0.9,          // 90% of screen width
-  height: height * 0.3,
-)
-
-// Breakpoints
-bool isTablet = width >= 600;
-bool isDesktop = width >= 1200;
-```
-
----
-
-## 20:33:15 — InheritedWidget vs InheritedModel
-| | `InheritedWidget` | `InheritedModel` |
-|---|---|---|
-| Rebuild trigger | Any change to the widget | Only when the specific aspect changes |
-| Use case | Simple, single data blob | Complex data with multiple independent parts |
-| Performance | Can over-rebuild | More granular rebuild control |
-- `MediaQuery` uses `InheritedModel` — widgets only rebuild when their specific aspect (size, padding, etc.) changes.
-
----
-
-## 20:35:03 — Responsive UI with LayoutBuilder
-```dart
-LayoutBuilder(
-  builder: (context, constraints) {
-    if (constraints.maxWidth > 600) {
-      return const TabletLayout();
-    }
-    return const MobileLayout();
-  },
-)
-// LayoutBuilder gives you the PARENT's constraints, not the full screen size
-```
-
----
-
-## 20:42:01 — MediaQuery vs LayoutBuilder
 | | MediaQuery | LayoutBuilder |
-|---|---|---|
-| What it measures | Full screen dimensions | Parent widget's constraints |
-| Best for | Screen-level decisions | Widget-level adaptations |
+|--|-----------|--------------|
+| Measures | Full screen | Parent widget constraints |
+| Best for | Screen-level layout decisions | Reusable widget adaptations |
 | Rebuilds when | Screen resizes | Parent constraints change |
-- Use `MediaQuery` at the screen/page level.
-- Use `LayoutBuilder` inside reusable widgets.
+
+> Rule: Use MediaQuery at the page/screen level. Use LayoutBuilder inside components.
 
 ---
 
-## 20:45:48 — Flutter Widget Sizing Summary
+## InheritedWidget vs InheritedModel
+
+| | InheritedWidget | InheritedModel |
+|--|----------------|----------------|
+| Rebuild trigger | Any change to the widget | Only when the specific "aspect" changes |
+| Performance | Can over-rebuild | More granular |
+| Example | Theme | MediaQuery |
+
+- MediaQuery uses InheritedModel — a widget reading only `size` won't rebuild when `orientation` changes
+
+---
+
+## Widget Sizing Summary
 
 | Widget | Behavior |
-|--------|----------|
+|--------|---------|
 | `Expanded` | Takes ALL remaining space on main axis |
 | `Flexible` | Takes up to available space (child can be smaller) |
-| `SizedBox` | Fixed size / spacer |
-| `FractionallySizedBox` | Fraction of parent's size |
+| `SizedBox` | Fixed size or gap |
+| `FractionallySizedBox` | Fraction of parent size (e.g., 80% of parent width) |
 | `AspectRatio` | Maintains width:height ratio |
-| `ConstrainedBox` | Adds min/max constraints |
-| `UnconstrainedBox` | Removes constraints (careful — can overflow) |
-| `FittedBox` | Scales/positions child within itself |
-| `IntrinsicWidth/Height` | Sizes to child's "natural" size (expensive) |
+| `ConstrainedBox` | Adds min/max size constraints |
+| `FittedBox` | Scales and positions child to fit within itself |
 
 ---
 
-## 20:46:53 — Conclusion
-**What you've covered:**
-- Dart: full language fundamentals, OOP, async, advanced features.
-- Flutter: widget system, state management (setState + Provider), navigation, HTTP, theming, responsive UI.
+## Project Architecture Best Practices
 
-**Next steps to deepen the stack:**
-- **State management**: Riverpod (modern, compile-safe) or Bloc (enterprise-scale).
-- **Local persistence**: Hive, Isar, SQLite via `sqflite`.
-- **Backend integration**: Firebase, Supabase, custom REST/GraphQL.
-- **Testing**: `flutter_test`, `mockito`, integration tests.
-- **Architecture patterns**: Clean Architecture, Repository pattern, MVVM.
-- **CI/CD**: Fastlane, GitHub Actions for automated builds.
-- **Publishing**: App Store / Play Store deployment.
+**Folder structure to follow:**
+```
+lib/
+├── models/      → Data classes (Product, User, WeatherData)
+├── screens/     → Full page widgets
+├── widgets/     → Reusable small widgets
+├── services/    → API calls, database logic
+└── providers/   → State management (ChangeNotifier classes)
+```
+
+**Why this matters:**
+- Separation of concerns → UI code stays clean
+- Easier to test individual pieces
+- Easy to find things as the project grows
 
 ---
-*Notes compiled from: The Complete Dart & Flutter Developer Course by Rivaan Ranawat*
+
+## What's Next After This Course
+
+- **State Management deep dive** → Riverpod (modern, compile-safe), Bloc (enterprise scale)
+- **Local storage** → Hive, Isar, SQLite (sqflite)
+- **Backend** → Firebase, Supabase, REST API with Dio
+- **Testing** → unit tests, widget tests, integration tests
+- **Architecture** → Clean Architecture, Repository pattern, MVVM
+- **Publishing** → Play Store (APK/AAB), App Store
+
+---
+
+## Quick Reference — Most Used Widgets
+
+| Widget | Purpose |
+|--------|---------|
+| `Text` | Display text |
+| `TextField` | Text input |
+| `Container` | Box with styling |
+| `Padding` | Add space around widget |
+| `Column / Row` | Vertical / horizontal layout |
+| `Stack` | Layer widgets on top of each other |
+| `Scaffold` | Screen structure |
+| `AppBar` | Top navigation bar |
+| `ListView.builder` | Scrollable list (lazy) |
+| `Card` | Elevated surface |
+| `ElevatedButton` | Primary action button |
+| `GestureDetector` | Detect taps, gestures |
+| `FutureBuilder` | Async UI from a Future |
+| `StreamBuilder` | Async UI from a Stream |
+| `Navigator` | Screen navigation |
+| `Provider` | Cross-widget state sharing |
+| `MediaQuery` | Screen size info |
+| `SafeArea` | Avoid system UI overlaps |
+
+---
+*Notes by Anik | Rivaan Ranawat — The Complete Dart & Flutter Developer Course*
