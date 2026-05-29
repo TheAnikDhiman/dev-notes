@@ -1,132 +1,208 @@
-# Python API Development — Comprehensive Course for Beginners
-**By Sanjeev Thiyagarajan | freeCodeCamp (19 Hours)**
-**Stack: FastAPI · PostgreSQL · SQLAlchemy · Pydantic · JWT · Alembic · Docker · Pytest · GitHub Actions**
-
-> 🔗 Course: [youtube.com/watch?v=0sOvCWFmrtA](https://youtu.be/0sOvCWFmrtA)
-> 🏗️ Project: A full social-media-style REST API with posts, users, authentication, votes, testing, deployment & CI/CD.
-
+# Python API Development — Comprehensive Course
+### By Sanjeev Thiyagarajan | freeCodeCamp.org
 ---
 
 ## Table of Contents
-1. [Intro & Project Overview](#section-1-intro--project-overview)
-2. [Setup & Installation](#section-2-setup--installation)
-3. [FastAPI Fundamentals](#section-3-fastapi-fundamentals)
-4. [Databases (SQL & PostgreSQL)](#section-4-databases-sql--postgresql)
-5. [Python + Raw SQL](#section-5-python--raw-sql)
-6. [ORMs (SQLAlchemy)](#section-6-orms-sqlalchemy)
-7. [Pydantic Models](#section-7-pydantic-models)
-8. [Authentication & Users](#section-8-authentication--users)
-9. [Relationships](#section-9-relationships)
-10. [Vote / Like System](#section-10-vote--like-system)
-11. [Database Migrations with Alembic](#section-11-database-migrations-with-alembic)
-12. [Pre-Deployment Checklist](#section-12-pre-deployment-checklist)
-13. [Deployment — Heroku](#section-13-deployment--heroku)
-14. [Deployment — Ubuntu](#section-14-deployment--ubuntu)
-15. [Docker](#section-15-docker)
-16. [Testing with Pytest](#section-16-testing-with-pytest)
-17. [CI/CD Pipeline with GitHub Actions](#section-17-cicd-pipeline-with-github-actions)
+1. [PART 1 — Intro to APIs & HTTP](#part-1--intro-to-apis--http)
+2. [PART 2 — FastAPI Basics](#part-2--fastapi-basics)
+3. [PART 3 — CRUD & HTTP Methods](#part-3--crud--http-methods)
+4. [PART 4 — Pydantic & Schema Validation](#part-4--pydantic--schema-validation)
+5. [PART 5 — PostgreSQL & Raw SQL](#part-5--postgresql--raw-sql)
+6. [PART 6 — SQLAlchemy ORM](#part-6--sqlalchemy-orm)
+7. [PART 7 — Response Schemas & Pydantic Models](#part-7--response-schemas--pydantic-models)
+8. [PART 8 — Authentication & Passwords](#part-8--authentication--passwords)
+9. [PART 9 — JWT Tokens](#part-9--jwt-tokens)
+10. [PART 10 — Routers & Code Organization](#part-10--routers--code-organization)
+11. [PART 11 — Database Relationships](#part-11--database-relationships)
+12. [PART 12 — Votes & SQL Joins](#part-12--votes--sql-joins)
+13. [PART 13 — Environment Variables](#part-13--environment-variables)
+14. [PART 14 — CORS](#part-14--cors)
+15. [PART 15 — Git Basics](#part-15--git-basics)
+16. [PART 16 — Deployment on Linux Server](#part-16--deployment-on-linux-server)
+17. [PART 17 — Nginx & Process Management](#part-17--nginx--process-management)
+18. [PART 18 — Docker](#part-18--docker)
+19. [PART 19 — CI/CD with GitHub Actions](#part-19--cicd-with-github-actions)
 
 ---
 
-# Section 1: Intro & Project Overview
-
-## 📖 Theory
-
-Before writing a single line of code, you need to understand *what* you're building and *why* the stack was chosen this way. An API (Application Programming Interface) is a contract between a server and a client — the server agrees to respond to specific requests in specific formats. REST (Representational State Transfer) is the dominant style for web APIs: stateless, resource-based, and using HTTP methods as verbs (GET = read, POST = create, PUT/PATCH = update, DELETE = delete).
-
-The reason this course matters is that most beginner tutorials show you a "hello world" API. Real production APIs are layered systems: a web framework to handle HTTP, a database to persist data, an ORM to talk to that database safely, an auth system to protect routes, migration tools to evolve the schema, tests to ensure correctness, containers to make it portable, and a CI/CD pipeline to ship it automatically. This course walks through every layer.
+# PART 1 — Intro to APIs & HTTP
 
 ---
 
-## What You'll Build
-A **social media REST API** with:
-- User registration & login (JWT authentication)
-- Create, read, update, delete **Posts**
-- **Vote/Like** system on posts
-- Full SQL database integration (PostgreSQL)
-- Deployed to both Heroku and Ubuntu server
-- Dockerized application
-- Automated test suite
-- CI/CD pipeline via GitHub Actions
+## What is an API?
 
-## Tech Stack Overview
+API stands for **Application Programming Interface**.  
+It is a way for two programs to communicate with each other.
 
-| Layer | Tool | Why |
-|-------|------|-----|
-| Web Framework | **FastAPI** | Async, auto-docs, Pydantic-native, very fast |
-| Database | **PostgreSQL** | Production-grade relational DB |
-| ORM | **SQLAlchemy** | Safe DB interaction, avoids raw SQL vulnerabilities |
-| Schema Validation | **Pydantic** | Auto-validates request/response data |
-| Auth | **JWT + OAuth2** | Stateless, industry standard |
-| Migrations | **Alembic** | Track and version database schema changes |
-| Testing | **Pytest** | Python's de facto testing framework |
-| Containerization | **Docker** | Environment consistency across machines |
-| CI/CD | **GitHub Actions** | Automate test → build → deploy |
+- Think of an API as a waiter in a restaurant:
+  - You (the client) give the waiter (API) your order
+  - The waiter goes to the kitchen (server/database)
+  - The waiter brings back your food (response)
+  - You never directly touch the kitchen
+- APIs define the rules for HOW two programs talk to each other
+- A **Web API** specifically communicates over the internet using HTTP
+- Examples in real life:
+  - Weather app fetching data from a weather service API
+  - Paying via Razorpay — your app talks to Razorpay's API
+  - Instagram showing posts — your phone talks to Instagram's API
 
 ---
 
-# Section 2: Setup & Installation
+## What is a REST API?
 
-## 📖 Theory
+REST = **Representational State Transfer**. It is the most common style of web API.
 
-Setting up a clean environment is foundational, not optional. The most common beginner mistake is installing packages globally — over time, different projects need different versions of the same library and they start conflicting. Python's **virtual environments** solve this by creating an isolated directory per project that has its own Python interpreter and packages. Every Python project should start with a virtual environment before any `pip install`.
+**Rules of REST (constraints):**
+- **Client-Server** → the frontend and backend are separate, they only talk via API
+- **Stateless** → every request from the client must contain ALL the info needed. The server never remembers previous requests
+- **Uniform Interface** → consistent structure for all endpoints
+- **Resources** → everything the API exposes is a "resource" (a post, a user, a comment)
+- **Representation** → resources are sent back in a format like JSON or XML
+
+**Stateless** is important to understand:
+- The server treats every request as brand new
+- Session data is NOT stored on the server
+- The client must include authentication info (token) in EVERY request
 
 ---
 
-## Python Installation
-- Download Python 3.9+ from [python.org](https://python.org).
-- Verify: `python --version` or `python3 --version`
+## HTTP (HyperText Transfer Protocol)
 
-## VS Code Setup
-- Install [VS Code](https://code.visualstudio.com/).
-- Install the **Python extension** by Microsoft.
-- Set the Python interpreter to the virtual environment (bottom-left selector in VS Code).
+HTTP is the protocol (set of rules) used to transfer data over the web.
 
-## Virtual Environment
+- Every API request is an HTTP request
+- HTTP defines how the request is structured and how the response comes back
+- HTTP is **request-response based** — client sends a request, server sends a response
+
+---
+
+## HTTP Request Structure
+
+Every HTTP request has these parts:
+
+**1. Method (Verb)** — what action you want to perform
+- `GET` → retrieve/read data
+- `POST` → create new data
+- `PUT` → fully update/replace existing data
+- `PATCH` → partially update existing data
+- `DELETE` → delete data
+
+**2. URL (Endpoint)** — where you're sending the request
+- Example: `https://api.myapp.com/posts/5`
+- The path (`/posts/5`) identifies the resource
+
+**3. Headers** — metadata about the request
+- `Content-Type: application/json` → tells server what format the body is in
+- `Authorization: Bearer <token>` → authentication info
+- Headers are key-value pairs, not visible in URL
+
+**4. Body (optional)** — the data sent WITH the request
+- Only for POST, PUT, PATCH
+- GET and DELETE don't have a body
+- Usually formatted as JSON
+
+---
+
+## HTTP Response Structure
+
+Every response has:
+
+**1. Status Code** — a 3-digit number telling you what happened
+
+| Range | Meaning | Examples |
+|-------|---------|---------|
+| 2xx | Success | 200 OK, 201 Created, 204 No Content |
+| 3xx | Redirect | 301 Moved Permanently |
+| 4xx | Client Error | 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 422 Unprocessable |
+| 5xx | Server Error | 500 Internal Server Error |
+
+**2. Headers** — metadata about the response
+- `Content-Type: application/json` → tells client what format the body is in
+
+**3. Body** — the actual data returned (usually JSON)
+
+> Rule: 4xx = it's the client's fault (wrong request). 5xx = it's the server's fault (bug or crash).
+
+---
+
+## JSON — The Language of APIs
+
+JSON = **JavaScript Object Notation**. The standard format for sending data in APIs.
+
+- Looks like a Python dictionary
+- Key-value pairs wrapped in `{}`
+- Keys are always strings (with double quotes)
+- Values can be: string, number, boolean, null, array, or another object
+- Lists are wrapped in `[]`
+
+```
+{
+  "id": 1,
+  "title": "My Post",
+  "published": true,
+  "author": { "name": "Anik", "age": 20 }
+}
+```
+
+> Why JSON? It's lightweight, human-readable, and every programming language can parse it.
+
+---
+
+## Postman
+
+Postman is a tool to test APIs without needing a frontend.
+
+- You can manually send HTTP requests (GET, POST, etc.) and see the response
+- Set headers, body, authentication all from a GUI
+- Very useful during development to verify your API before connecting a frontend
+- Alternative: `curl` in the terminal, or **Thunder Client** (VS Code extension)
+
+---
+
+# PART 2 — FastAPI Basics
+
+---
+
+## What is FastAPI?
+
+FastAPI is a modern Python web framework for building APIs quickly.
+
+- Based on Python **type hints** — you declare what type each parameter is, FastAPI handles the rest
+- Extremely fast — one of the fastest Python frameworks (comparable to Node.js and Go)
+- **Automatic documentation** — FastAPI generates interactive API docs automatically at `/docs` and `/redoc`
+- Built on top of **Starlette** (web framework) and **Pydantic** (data validation)
+- Uses **ASGI** (Asynchronous Server Gateway Interface) — supports async requests natively
+
+**Why FastAPI over Flask/Django?**
+- Flask: minimal, but no built-in validation, no auto docs, slower
+- Django: full-featured but heavy and opinionated, overkill for pure APIs
+- FastAPI: best of both — lightweight but powerful, fast, with validation and docs built-in
+
+---
+
+## Setup & Installation
 
 ```bash
-# Create virtual environment (inside your project folder)
+pip install fastapi uvicorn[standard]
+```
+
+- **fastapi** → the framework itself
+- **uvicorn** → the ASGI server that runs your FastAPI app (like Apache/Nginx but for Python async)
+- Always use a **virtual environment** to isolate project dependencies:
+
+```bash
 python -m venv venv
-
-# Activate — Windows
-venv\Scripts\activate
-
-# Activate — Mac/Linux
-source venv/bin/activate
-
-# Your terminal prompt should now show (venv)
-
-# Install packages (only affects this venv, not global Python)
-pip install fastapi uvicorn
-
-# Deactivate when done
-deactivate
+source venv/bin/activate      # Mac/Linux
+venv\Scripts\activate         # Windows
 ```
 
-> ⚠️ Always activate your virtual environment before running or installing anything in a project. If you see packages missing, you probably forgot to activate.
+> Why virtual environment? Keeps each project's packages separate. Without it, packages from one project can break another.
 
 ---
 
-# Section 3: FastAPI Fundamentals
-
-## 📖 Theory
-
-FastAPI is built on two things: **Starlette** (the underlying async web framework) and **Pydantic** (the data validation engine). When a request comes in, Starlette handles routing it to the correct function. Pydantic then validates the incoming data against your schema and raises a 422 Unprocessable Entity response automatically if the data is wrong — no manual validation needed. The function runs and returns a Python object, which FastAPI serializes to JSON.
-
-The order of route definitions matters because FastAPI tries to match routes top to bottom. A fixed route like `/posts/latest` must appear before the parameterized route `/posts/{id}`, otherwise `/posts/latest` will be incorrectly captured as `id = "latest"`.
-
----
-
-## Installing Dependencies
-
-```bash
-pip install fastapi uvicorn[standard] psycopg2-binary sqlalchemy pydantic python-jose[cryptography] passlib[bcrypt] python-multipart
-```
-
-## Starting FastAPI
+## Creating Your First FastAPI App
 
 ```python
-# main.py
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -136,1532 +212,1472 @@ def root():
     return {"message": "Hello World"}
 ```
 
-```bash
-# Run the dev server (auto-reload on file save)
-uvicorn main:app --reload
+- `app = FastAPI()` → creates the application instance
+- `@app.get("/")` → a **decorator** that registers this function as the handler for GET requests to "/"
+- The function returns a Python dict — FastAPI automatically converts it to JSON
+- Run with: `uvicorn main:app --reload`
+  - `main` = the filename (main.py)
+  - `app` = the FastAPI instance
+  - `--reload` = hot-reload on file changes (development only)
 
-# Access auto-generated interactive docs
-# Swagger UI: http://127.0.0.1:8000/docs
-# ReDoc:       http://127.0.0.1:8000/redoc
-```
+---
 
 ## Path Operations (Routes)
 
+A **path operation** = URL path + HTTP method together.
+
+- The combination of a path and a method is what uniquely identifies an endpoint
+- Example: `GET /posts` and `POST /posts` are TWO different endpoints even though same URL
+- The function attached to a path operation is called a **path operation function**
+- FastAPI matches incoming requests to the right function automatically
+
+---
+
+## Automatic API Documentation
+
+FastAPI auto-generates documentation from your code:
+
+- **Swagger UI** → `http://localhost:8000/docs` → interactive, you can test endpoints directly
+- **ReDoc** → `http://localhost:8000/redoc` → cleaner, read-only documentation
+- The docs are generated from your type hints, function names, docstrings, and Pydantic models
+- In production you might want to disable docs for security
+
+---
+
+## Path Parameters
+
+Path parameters are variable parts of the URL path — identified by `{name}` in the route.
+
 ```python
-from fastapi import FastAPI, Response, status, HTTPException
-
-app = FastAPI()
-
-# GET — retrieve data
-@app.get("/posts")
-def get_posts():
-    return {"data": posts_list}
-
-# POST — create new data
-@app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(post: PostCreate):
-    return {"new_post": post}
-
-# GET single item — path parameter
 @app.get("/posts/{id}")
-def get_post(id: int):   # FastAPI auto-converts string to int, raises 422 if invalid
-    return {"post": find_post(id)}
-
-# PUT — full update
-@app.put("/posts/{id}")
-def update_post(id: int, post: PostCreate):
-    return {"updated": post}
-
-# DELETE
-@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int):
-    # return nothing on 204
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+def get_post(id: int):
+    return {"id": id}
 ```
 
-## ⚠️ Path Order Matters
+- FastAPI extracts the value from the URL and passes it to your function
+- The type hint (`int`) tells FastAPI to automatically convert the string from the URL to an integer
+- If conversion fails (e.g., `/posts/abc` when expecting int) → FastAPI returns 422 automatically
+- **Order matters** — more specific routes must come BEFORE parameterized ones in your file
+
+---
+
+## Query Parameters
+
+Query parameters come after `?` in the URL: `/posts?limit=10&skip=5&search=python`
+
+- Any function parameter that is NOT a path parameter is automatically treated as a query param
+- They are optional by default if you give them a default value
+- FastAPI extracts and validates them automatically
+
 ```python
-# CORRECT order:
-@app.get("/posts/latest")   # specific — must come first
-def get_latest(): ...
-
-@app.get("/posts/{id}")     # parameterized — must come after
-def get_post(id: int): ...
-
-# If reversed: "latest" gets captured as id="latest" → crash
+@app.get("/posts")
+def get_posts(limit: int = 10, skip: int = 0, search: str = ""):
+    # limit, skip, search come from URL query string
+    pass
 ```
 
-## HTTP Status Codes (Most Common)
+---
 
-| Code | Meaning | Use When |
-|------|---------|---------|
-| 200 | OK | Successful GET, PUT, PATCH |
-| 201 | Created | Successful POST |
-| 204 | No Content | Successful DELETE |
-| 400 | Bad Request | Malformed request from client |
-| 401 | Unauthorized | No valid auth credentials |
-| 403 | Forbidden | Authenticated but no permission |
-| 404 | Not Found | Resource doesn't exist |
-| 422 | Unprocessable Entity | Schema validation failed |
-| 500 | Internal Server Error | Bug on the server |
+# PART 3 — CRUD & HTTP Methods
 
-## Raising HTTP Exceptions
+---
+
+## What is CRUD?
+
+CRUD = **Create, Read, Update, Delete** — the four fundamental operations on data.
+
+| Operation | HTTP Method | Typical Path |
+|-----------|------------|-------------|
+| Create | POST | /posts |
+| Read (all) | GET | /posts |
+| Read (one) | GET | /posts/{id} |
+| Update | PUT or PATCH | /posts/{id} |
+| Delete | DELETE | /posts/{id} |
+
+- Every real-world feature in an app maps to one or more CRUD operations
+- REST APIs are designed around resources (nouns like "posts", "users") and CRUD operations (verbs via HTTP methods)
+
+---
+
+## GET — Reading Data
+
+- Used to retrieve data — never changes data on the server
+- Parameters come from the URL (path or query) — no body
+- Should be **idempotent** — calling it 10 times has the same result as calling it once
+- Returns 200 OK on success
+
+---
+
+## POST — Creating Data
+
+- Used to create new resources
+- Data is sent in the **request body** as JSON
+- NOT idempotent — sending the same POST twice creates two records
+- Returns 201 Created on success (though 200 is also common)
+- `status_code=201` in FastAPI: `@app.post("/posts", status_code=201)`
+
+---
+
+## PUT vs PATCH — Updating Data
+
+**PUT:**
+- Replaces the ENTIRE resource with what you send
+- If you don't include a field, it becomes null/default
+- Used when the client sends the full updated object
+
+**PATCH:**
+- Partially updates a resource — only the fields you send are changed
+- Other fields remain unchanged
+- More commonly used in practice — you only send what changed
+
+---
+
+## DELETE — Removing Data
+
+- Deletes a resource identified by its ID in the path
+- No body needed
+- Returns 204 No Content (no body in response) or 200 OK
+- Should be idempotent — deleting the same thing twice should be safe (second delete returns 404, not crash)
+
+---
+
+## HTTPException — Returning Errors
+
+When something goes wrong (resource not found, not authorized), you raise an exception:
 
 ```python
 from fastapi import HTTPException, status
 
-@app.get("/posts/{id}")
-def get_post(id: int):
-    post = find_post(id)
-    if not post:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Post with id {id} was not found"
-        )
-    return post
+raise HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail="Post not found"
+)
 ```
 
-## Schema Validation with Pydantic
+- FastAPI catches it and returns the proper HTTP error response automatically
+- Use `status` module from FastAPI for named status codes (readable and less error-prone than raw numbers)
+- Always return meaningful error messages in `detail` — helps debugging
+
+---
+
+# PART 4 — Pydantic & Schema Validation
+
+---
+
+## What is Pydantic?
+
+Pydantic is a Python library for **data validation and settings management** using type hints.
+
+- You define a model (class) with typed fields
+- Pydantic automatically validates incoming data against that model
+- If data doesn't match → Pydantic raises a clear validation error automatically
+- FastAPI uses Pydantic deeply — request bodies, query params, responses all validated via Pydantic
+
+> Think of Pydantic as a strict bouncer — it checks every piece of data before it enters your system.
+
+---
+
+## Pydantic BaseModel
 
 ```python
 from pydantic import BaseModel
-from typing import Optional
 
-class PostBase(BaseModel):
+class PostCreate(BaseModel):
     title: str
     content: str
-    published: bool = True    # default value
-
-class PostCreate(PostBase):
-    pass    # inherits title, content, published
-
-class PostUpdate(PostBase):
-    title: Optional[str] = None    # all optional for updates
-    content: Optional[str] = None
+    published: bool = True   # default value — optional field
 ```
 
-- FastAPI auto-reads the request body and validates against the Pydantic model.
-- Invalid fields → 422 response with details (no extra code from you).
-- Extra fields in the body are silently ignored (safe by default).
+- Inherit from `BaseModel`
+- Each field is a class attribute with a type annotation
+- Optional fields get a default value
+- Required fields have no default — must be provided
 
-## Storing Posts (In-Memory Array)
+---
+
+## Request Body Validation
+
+When you declare a parameter with a Pydantic model type, FastAPI:
+1. Reads the JSON from the request body
+2. Validates it against the model
+3. Converts it to the Python object
+4. Passes it to your function
+
+If validation fails → 422 Unprocessable Entity is returned automatically with a clear error message telling exactly which field is wrong and why.
+
+---
+
+## Why Separate Schemas Matter
+
+You'll often need DIFFERENT models for different purposes:
+
+- **Request schema** (input) → what the client sends you. Doesn't include `id` (server generates it) or `created_at`
+- **Response schema** (output) → what you send back to the client. Includes `id`, `created_at`, etc.
+- **DB model** → how data is stored. May include `password` hash (which you'd NEVER send in response)
+
+Keeping these separate prevents accidentally exposing sensitive data.
+
+---
+
+## Field Validation with Pydantic
+
+Beyond just types, Pydantic lets you add constraints:
+
 ```python
-# Temporary in-memory store (before DB integration)
-posts_db = [
-    {"id": 1, "title": "First Post", "content": "Content here", "published": True}
-]
+from pydantic import BaseModel, EmailStr
+from typing import Optional
 
-def find_post(id: int):
-    for p in posts_db:
-        if p["id"] == id:
-            return p
-    return None
-
-def find_index(id: int):
-    for i, p in enumerate(posts_db):
-        if p["id"] == id:
-            return i
-    return None
+class UserCreate(BaseModel):
+    email: EmailStr          # validates email format automatically
+    password: str
+    age: Optional[int] = None  # optional — can be None
 ```
 
-## CRUD Operations Summary
-
-| Operation | HTTP Method | Route | Status Code |
-|-----------|-------------|-------|-------------|
-| Read all | GET | `/posts` | 200 |
-| Read one | GET | `/posts/{id}` | 200 |
-| Create | POST | `/posts` | 201 |
-| Full Update | PUT | `/posts/{id}` | 200 |
-| Delete | DELETE | `/posts/{id}` | 204 |
-
-## Postman
-- GUI tool for testing APIs without a frontend.
-- Create a **Collection** to group all your API requests.
-- Save requests with sample bodies for quick re-testing.
-- Set **environment variables** (e.g., `{{base_url}}` = `http://127.0.0.1:8000`) for easy switching between dev/prod.
-
-## Python Packages Structure
-```
-app/
-├── main.py          # FastAPI app, all routes
-├── models.py        # SQLAlchemy DB models
-├── schemas.py       # Pydantic schemas (request/response shapes)
-├── database.py      # DB connection setup
-├── utils.py         # Helper functions (e.g., password hashing)
-├── oauth2.py        # JWT auth logic
-└── routers/
-    ├── posts.py     # Post routes
-    ├── users.py     # User routes
-    └── auth.py      # Login route
-```
+- `EmailStr` → validates proper email format (needs `pip install email-validator`)
+- `Optional[T]` → field can be None (nullable)
+- You can also add min/max length, regex patterns, value ranges
 
 ---
 
-# Section 4: Databases (SQL & PostgreSQL)
-
-## 📖 Theory
-
-A database persists data beyond a single server session. Without one, all data lives in memory and is lost when the server restarts. **Relational databases** organize data into **tables** (think spreadsheets) with **rows** (records) and **columns** (fields). Tables relate to each other via **foreign keys** — a post table can have a `user_id` column pointing to the users table, establishing ownership.
-
-PostgreSQL is one of the most powerful open-source relational databases. It's the industry standard for production Python backends. Everything you learn here transfers directly to MySQL, SQLite, and other SQL databases — the syntax is 95% the same.
+# PART 5 — PostgreSQL & Raw SQL
 
 ---
 
-## Installing PostgreSQL
-- **Windows**: Download from [postgresql.org](https://www.postgresql.org/download/).
-- **Mac**: `brew install postgresql`
-- Use **pgAdmin** (GUI) for visual exploration, or `psql` (CLI).
+## What is a Database?
 
-## Core SQL Commands
+A database is an organized system for storing, managing, and retrieving data persistently.
+
+- Without a database, your data lives only in memory — lost when the server restarts
+- Databases store data on disk — persists forever until you delete it
+- **RDBMS** (Relational Database Management System) — organizes data in tables with rows and columns
+- Tables have relationships with each other (hence "relational")
+
+---
+
+## What is PostgreSQL?
+
+PostgreSQL (Postgres) is one of the most powerful open-source relational databases.
+
+- Stores data in **tables** (like Excel spreadsheets but much more powerful)
+- Uses **SQL** (Structured Query Language) to interact with data
+- Supports complex queries, relationships, constraints, transactions
+- Free, open-source, battle-tested at massive scale (used by Instagram, Reddit, etc.)
+
+**Key concepts:**
+- **Table** → a collection of related data (like a spreadsheet tab)
+- **Row** → one record (one post, one user)
+- **Column** → a specific attribute (title, content, created_at)
+- **Primary Key** → unique identifier for each row (usually `id`, auto-incremented)
+- **Schema** → the structure/blueprint of a table (which columns, what types, constraints)
+
+---
+
+## SQL Basics
+
+SQL is the language used to talk to relational databases.
+
+**Common commands:**
 
 ```sql
--- CREATE a table
-CREATE TABLE posts (
-    id SERIAL PRIMARY KEY,          -- auto-incrementing integer ID
-    title VARCHAR(255) NOT NULL,
-    content TEXT NOT NULL,
-    published BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
--- INSERT data
-INSERT INTO posts (title, content) VALUES ('My Post', 'Hello World');
-
--- SELECT data
+-- Read all rows
 SELECT * FROM posts;
-SELECT title, content FROM posts;
 
--- WHERE filter
-SELECT * FROM posts WHERE published = TRUE;
-SELECT * FROM posts WHERE id = 3;
+-- Read specific columns with a condition
+SELECT id, title FROM posts WHERE published = true;
 
--- SQL Operators
-SELECT * FROM posts WHERE id > 2 AND published = TRUE;
-SELECT * FROM posts WHERE id = 1 OR id = 2;
-SELECT * FROM posts WHERE id != 5;
+-- Create a new row
+INSERT INTO posts (title, content) VALUES ('Hello', 'My first post');
 
--- IN keyword (match a list)
-SELECT * FROM posts WHERE id IN (1, 2, 3);
+-- Update a row
+UPDATE posts SET title = 'New Title' WHERE id = 5;
 
--- Pattern matching with LIKE
-SELECT * FROM posts WHERE title LIKE '%python%';  -- contains "python"
-SELECT * FROM posts WHERE title LIKE 'python%';  -- starts with "python"
-SELECT * FROM posts WHERE title LIKE '%python';  -- ends with "python"
-
--- ORDER results
-SELECT * FROM posts ORDER BY created_at DESC;
-SELECT * FROM posts ORDER BY title ASC;
-
--- LIMIT and OFFSET (pagination)
-SELECT * FROM posts LIMIT 10 OFFSET 20;  -- page 3 of 10-per-page results
-
--- UPDATE
-UPDATE posts SET title = 'New Title', published = FALSE WHERE id = 1;
-
--- DELETE
-DELETE FROM posts WHERE id = 3;
-
--- Returning deleted/updated row
-DELETE FROM posts WHERE id = 3 RETURNING *;
+-- Delete a row
+DELETE FROM posts WHERE id = 5;
 ```
 
-## Schema & Tables
-- **Schema**: The structure/blueprint of your database (tables, columns, data types, constraints).
-- **Primary Key**: Unique identifier for each row (usually `id`).
-- **NOT NULL**: Column cannot be empty.
-- **DEFAULT**: Value used when no value is provided.
-- **SERIAL**: Auto-incrementing integer (PostgreSQL-specific).
+- `*` means all columns
+- `WHERE` filters rows based on condition
+- Every statement ends with `;`
+- SQL is case-insensitive for keywords (SELECT = select) but column/table names are case-sensitive
 
 ---
 
-# Section 5: Python + Raw SQL
+## Connecting to PostgreSQL with psycopg2
 
-## 📖 Theory
+**psycopg2** is the most popular PostgreSQL driver for Python.
 
-Before using an ORM, it's important to understand what's happening underneath. Raw SQL with Python uses the **psycopg2** library (the PostgreSQL adapter). Your Python code sends SQL strings directly to the database and receives results back. The risk here is **SQL injection** — if you concatenate user input directly into SQL strings, a malicious user can break out of your query and run arbitrary SQL. The fix is always using **parameterized queries** (using `%s` placeholders), never string concatenation.
+- A "driver" is a library that lets your Python code talk to a specific database
+- `pip install psycopg2-binary`
 
----
+**Flow:**
+1. Create a connection to the database
+2. Create a cursor (like a pointer that executes SQL)
+3. Execute SQL using the cursor
+4. Commit the transaction (save changes)
+5. Close connection when done
 
-## Connecting to PostgreSQL
-
-```python
-# database.py
-import psycopg2
-from psycopg2.extras import RealDictCursor
-import time
-
-while True:
-    try:
-        conn = psycopg2.connect(
-            host='localhost',
-            database='fastapi',
-            user='postgres',
-            password='yourpassword',
-            cursor_factory=RealDictCursor   # returns rows as dicts (key: column name)
-        )
-        cursor = conn.cursor()
-        print("Database connection successful")
-        break
-    except Exception as error:
-        print("Connection failed:", error)
-        time.sleep(2)   # retry every 2 seconds
-```
-
-## Raw SQL CRUD
-
-```python
-# GET all posts
-@app.get("/posts")
-def get_posts():
-    cursor.execute("SELECT * FROM posts")
-    posts = cursor.fetchall()
-    return {"data": posts}
-
-# CREATE post — use %s placeholders (NEVER concatenate user input)
-@app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(post: PostCreate):
-    cursor.execute(
-        """INSERT INTO posts (title, content, published)
-           VALUES (%s, %s, %s) RETURNING *""",
-        (post.title, post.content, post.published)
-    )
-    new_post = cursor.fetchone()
-    conn.commit()   # must commit to persist changes
-    return {"data": new_post}
-
-# GET one post
-@app.get("/posts/{id}")
-def get_post(id: int):
-    cursor.execute("SELECT * FROM posts WHERE id = %s", (str(id),))
-    post = cursor.fetchone()
-    if not post:
-        raise HTTPException(status_code=404, detail=f"Post {id} not found")
-    return {"data": post}
-
-# DELETE post
-@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int):
-    cursor.execute("DELETE FROM posts WHERE id = %s RETURNING *", (str(id),))
-    deleted = cursor.fetchone()
-    conn.commit()
-    if not deleted:
-        raise HTTPException(status_code=404, detail=f"Post {id} not found")
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-# UPDATE post
-@app.put("/posts/{id}")
-def update_post(id: int, post: PostCreate):
-    cursor.execute(
-        """UPDATE posts SET title = %s, content = %s, published = %s
-           WHERE id = %s RETURNING *""",
-        (post.title, post.content, post.published, str(id))
-    )
-    updated = cursor.fetchone()
-    conn.commit()
-    if not updated:
-        raise HTTPException(status_code=404, detail=f"Post {id} not found")
-    return {"data": updated}
-```
-
-> ⚠️ Always call `conn.commit()` after INSERT/UPDATE/DELETE. Without it, changes are in a transaction and never actually written to the database.
+> Using raw SQL with psycopg2 works but is verbose and error-prone. This is why ORMs exist.
 
 ---
 
-# Section 6: ORMs (SQLAlchemy)
+## What is a Transaction?
 
-## 📖 Theory
+A transaction is a group of SQL operations that either ALL succeed or ALL fail together.
 
-An ORM (Object-Relational Mapper) lets you interact with your database using Python objects instead of raw SQL strings. You define a Python class for each table, and SQLAlchemy translates your Python method calls into the correct SQL behind the scenes. This has several advantages: you get Python syntax (not SQL strings), you're protected from SQL injection by default, switching databases requires minimal code changes, and your models serve as documentation for your schema.
-
-The trade-off: ORMs add a layer of abstraction that can obscure what SQL is actually being run. For complex queries, sometimes raw SQL (or SQLAlchemy's Core expression language) is clearer and faster. In this course, SQLAlchemy's ORM is used for standard CRUD, which is the right call for most operations.
+- **COMMIT** → save all changes in the current transaction permanently
+- **ROLLBACK** → undo all changes in the current transaction (if something went wrong)
+- This protects data integrity — you never have half-saved data
+- Example: bank transfer — deduct from account A AND add to account B. If adding fails, deducting must also be undone.
 
 ---
 
-## SQLAlchemy Setup
+# PART 6 — SQLAlchemy ORM
 
+---
+
+## What is an ORM?
+
+ORM = **Object Relational Mapper**. It lets you interact with your database using Python code instead of raw SQL.
+
+- You define your tables as Python classes
+- ORM translates your Python operations into SQL automatically
+- You never (or rarely) write SQL directly
+- Result: cleaner, more Pythonic, less error-prone code
+
+**Without ORM (raw SQL):**
 ```python
-# database.py
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:password@localhost/fastapi"
-
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base = declarative_base()
-
-# Dependency — injects a DB session into route functions
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+cursor.execute("SELECT * FROM posts WHERE id = %s", (id,))
 ```
 
-## Defining Models
+**With ORM:**
+```python
+db.query(Post).filter(Post.id == id).first()
+```
+
+The ORM version is easier to read, write, and less vulnerable to SQL injection.
+
+---
+
+## SQLAlchemy
+
+SQLAlchemy is Python's most powerful ORM — and also a full SQL toolkit.
+
+- Two levels:
+  - **Core** → low-level SQL expression language (still writes SQL-like code)
+  - **ORM** → high-level, work with Python classes and objects
+- FastAPI commonly uses SQLAlchemy ORM with PostgreSQL
+- `pip install sqlalchemy`
+
+---
+
+## Defining Models (Tables)
+
+Each table is a Python class that inherits from SQLAlchemy's `Base`.
 
 ```python
-# models.py
-from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP
-from sqlalchemy.sql.expression import text
-from .database import Base
+from sqlalchemy import Column, Integer, String, Boolean
+from database import Base
 
 class Post(Base):
-    __tablename__ = "posts"
+    __tablename__ = "posts"        # the actual table name in DB
 
     id = Column(Integer, primary_key=True, nullable=False)
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
-    published = Column(Boolean, server_default='TRUE', nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False,
-                        server_default=text('now()'))
+    published = Column(Boolean, default=True)
 ```
 
-```python
-# In main.py — create tables from models (dev only; use Alembic in prod)
-from . import models
-from .database import engine
-
-models.Base.metadata.create_all(bind=engine)
-```
-
-## SQLAlchemy CRUD Operations
-
-```python
-from fastapi import Depends
-from sqlalchemy.orm import Session
-from . import models, schemas
-from .database import get_db
-
-# GET all posts
-@app.get("/posts")
-def get_posts(db: Session = Depends(get_db)):
-    posts = db.query(models.Post).all()
-    return posts
-
-# CREATE post
-@app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
-    new_post = models.Post(**post.dict())   # unpack Pydantic model to ORM model
-    db.add(new_post)
-    db.commit()
-    db.refresh(new_post)   # reload the row (to get DB-generated fields like id)
-    return new_post
-
-# GET one post
-@app.get("/posts/{id}")
-def get_post(id: int, db: Session = Depends(get_db)):
-    post = db.query(models.Post).filter(models.Post.id == id).first()
-    if not post:
-        raise HTTPException(status_code=404, detail=f"Post {id} not found")
-    return post
-
-# DELETE post
-@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int, db: Session = Depends(get_db)):
-    post_query = db.query(models.Post).filter(models.Post.id == id)
-    if post_query.first() is None:
-        raise HTTPException(status_code=404, detail=f"Post {id} not found")
-    post_query.delete(synchronize_session=False)
-    db.commit()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-# UPDATE post
-@app.put("/posts/{id}")
-def update_post(id: int, post: schemas.PostCreate, db: Session = Depends(get_db)):
-    post_query = db.query(models.Post).filter(models.Post.id == id)
-    if post_query.first() is None:
-        raise HTTPException(status_code=404, detail=f"Post {id} not found")
-    post_query.update(post.dict(), synchronize_session=False)
-    db.commit()
-    return post_query.first()
-```
+- `__tablename__` → name of the table in the database
+- `Column(type, constraints)` → defines a column
+- `primary_key=True` → this column is the unique identifier
+- `nullable=False` → this column is required, cannot be empty
+- `default=True` → default value if none provided
 
 ---
 
-# Section 7: Pydantic Models
+## Database Connection Setup
 
-## 📖 Theory
+```python
+# database.py
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-Pydantic models serve a completely different purpose than SQLAlchemy models, and confusing the two is the most common beginner mistake in FastAPI. **SQLAlchemy models** define the shape of your database tables. **Pydantic models** define the shape of data flowing in and out of your API — what the client sends and what the server returns. They are deliberately kept separate because what you store in the DB and what you expose via API are often different (e.g., you store hashed passwords, but you never return them in responses).
+DATABASE_URL = "postgresql://user:password@localhost/dbname"
+
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+```
+
+- **engine** → the connection to the database
+- **SessionLocal** → factory for creating database sessions
+- **Base** → parent class for all your ORM models
 
 ---
 
-## Pydantic vs ORM Models
+## Database Session (Dependency Injection)
 
-| | Pydantic (schemas.py) | SQLAlchemy (models.py) |
-|---|---|---|
-| Purpose | Request/Response validation | Database table definition |
-| Used for | Parsing input, shaping output | Querying, writing to DB |
-| Lives in | `schemas.py` | `models.py` |
-| Base class | `pydantic.BaseModel` | `sqlalchemy.Base` |
+A **session** is an active database connection for a single request.
 
-## Pydantic Schema Design
+- Each request gets its OWN session → opened at start, closed at end
+- FastAPI handles this via **dependency injection** — you declare what your function needs and FastAPI provides it
 
 ```python
-# schemas.py
-from pydantic import BaseModel
-from datetime import datetime
-from typing import Optional
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db       # give the session to the route function
+    finally:
+        db.close()    # ALWAYS close, even if an error occurred
+```
 
-# --- Post Schemas ---
-class PostBase(BaseModel):
+- Inject it into routes: `db: Session = Depends(get_db)`
+- `Depends()` is FastAPI's dependency injection system
+- Session is automatically closed after each request
+
+---
+
+## CRUD with SQLAlchemy
+
+**Read all:**
+```python
+posts = db.query(Post).all()
+posts = db.query(Post).filter(Post.published == True).all()
+```
+
+**Read one:**
+```python
+post = db.query(Post).filter(Post.id == id).first()
+```
+
+**Create:**
+```python
+new_post = Post(**post_data.dict())
+db.add(new_post)
+db.commit()
+db.refresh(new_post)   # refresh to get server-generated fields like id
+```
+
+**Update:**
+```python
+post_query = db.query(Post).filter(Post.id == id)
+post_query.update(updated_data.dict(), synchronize_session=False)
+db.commit()
+```
+
+**Delete:**
+```python
+post_query = db.query(Post).filter(Post.id == id)
+post_query.delete(synchronize_session=False)
+db.commit()
+```
+
+> `db.commit()` saves changes. `db.refresh()` re-fetches the object from DB (needed to get auto-generated values like `id` and `created_at`).
+
+---
+
+## Alembic — Database Migrations
+
+Migrations track changes to your database schema over time.
+
+- When you add a new column, change a type, or add a table — you need a migration
+- **Alembic** is the migration tool for SQLAlchemy
+- Each migration = a versioned file that describes what changed
+- You can apply migrations forward (upgrade) or reverse them (downgrade)
+- Think of migrations like Git commits — but for your database structure
+- `pip install alembic`
+- `alembic init alembic` → setup migration folder
+- `alembic revision --autogenerate -m "add column"` → auto-detect changes and generate migration
+- `alembic upgrade head` → apply all pending migrations
+
+---
+
+# PART 7 — Response Schemas & Pydantic Models
+
+---
+
+## Input vs Output Models
+
+You need different Pydantic models for different phases:
+
+**Input model (request body):**
+- What the client sends you
+- No `id`, no `created_at` (these are server-generated)
+- May include password in plain text
+
+**Output model (response):**
+- What you send back to the client
+- Includes `id`, `created_at`
+- NEVER includes `password` hash
+
+**DB model (SQLAlchemy):**
+- Represents the table row
+- Has all fields including internal ones
+
+---
+
+## Pydantic's `model_config` and `from_orm`
+
+By default Pydantic only reads from dicts. To read from SQLAlchemy objects:
+
+```python
+class PostResponse(BaseModel):
+    id: int
     title: str
-    content: str
-    published: bool = True
+    published: bool
 
-class PostCreate(PostBase):
-    pass   # same fields for creation
-
-class PostResponse(PostBase):
-    id: int
-    created_at: datetime
-    owner_id: int
-
-    class Config:
-        orm_mode = True  # allows reading from SQLAlchemy ORM objects (not just dicts)
-        # In Pydantic v2: model_config = ConfigDict(from_attributes=True)
-
-# --- User Schemas ---
-class UserCreate(BaseModel):
-    email: str
-    password: str
-
-class UserResponse(BaseModel):
-    id: int
-    email: str
-    created_at: datetime
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
+    # Pydantic v2 style — allows reading from ORM objects
 ```
 
-## Response Model
+- `from_attributes=True` (previously `orm_mode=True` in Pydantic v1) → tells Pydantic to read data from object attributes, not just dictionaries
+- Without this, returning a SQLAlchemy object directly would fail
+
+---
+
+## Controlling Response with `response_model`
 
 ```python
-# Tell FastAPI exactly what to return — filters out sensitive fields
-@app.get("/posts/{id}", response_model=schemas.PostResponse)
+@app.get("/posts/{id}", response_model=PostResponse)
 def get_post(id: int, db: Session = Depends(get_db)):
-    post = db.query(models.Post).filter(models.Post.id == id).first()
-    return post   # FastAPI uses PostResponse schema to serialize this
+    ...
 ```
 
-- `response_model` is critical for security — it prevents accidentally leaking fields like `password` or internal IDs.
-- `orm_mode = True` tells Pydantic to read attributes from ORM objects (not just dicts).
+- `response_model` → FastAPI uses this to filter and shape the response
+- Even if the database returns more fields (like password), only fields in `PostResponse` will be included in the API response
+- FastAPI validates the response data too — not just input
 
 ---
 
-# Section 8: Authentication & Users
-
-## 📖 Theory
-
-Authentication answers the question: "who are you?" The standard approach in modern REST APIs is **JWT (JSON Web Token)**. When a user logs in with correct credentials, the server creates a signed token containing their identity (e.g., user ID). The client stores this token and sends it in the `Authorization` header with every subsequent request. The server verifies the signature — if valid, it trusts the identity inside the token without checking the database again. This is **stateless** — the server doesn't need to store sessions anywhere.
-
-Passwords must **never** be stored as plain text. A hash function (like bcrypt) converts a password into a fixed-length string that cannot be reversed. When a user logs in, you hash their input and compare it to the stored hash — you never see the original password.
+# PART 8 — Authentication & Passwords
 
 ---
 
-## Creating the Users Table
+## Why Authentication Matters
+
+Authentication = verifying WHO the user is.  
+Authorization = verifying WHAT the user is allowed to do.
+
+- Without authentication, anyone could create, read, update, or delete any data
+- Most API endpoints should be protected — only logged-in users can access them
+
+---
+
+## Never Store Plain-Text Passwords
+
+This is a hard rule, no exceptions.
+
+- If your database is breached and passwords are plain text → everyone's account on every site (because people reuse passwords) is compromised
+- Solution: **hash** the password before storing it
+- A hash is a one-way transformation — you can't reverse a hash back to the original password
+- To verify: hash the input password and compare it to the stored hash
+- Same input always produces same hash. Different input never produces same hash.
+
+---
+
+## Password Hashing with bcrypt
+
+**Passlib** is a Python library for password hashing. It uses bcrypt by default.
+
+- `pip install passlib[bcrypt]`
+- `bcrypt` is a slow hashing algorithm — intentionally slow to make brute-force attacks expensive
+- It also adds a **salt** automatically — a random value added before hashing to prevent "rainbow table" attacks
 
 ```python
-# models.py
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True, nullable=False)
-    email = Column(String, nullable=False, unique=True)
-    password = Column(String, nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False,
-                        server_default=text('now()'))
-```
-
-## Password Hashing
-
-```python
-# utils.py
 from passlib.context import CryptContext
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt"])
 
-def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+def hash_password(plain_password: str) -> str:
+    return pwd_context.hash(plain_password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 ```
 
-## User Registration Route
+- `hash()` → converts plain password to a bcrypt hash
+- `verify()` → checks if plain password matches the stored hash (returns True/False)
+
+---
+
+## User Registration Flow
+
+1. Client sends email + password
+2. Server hashes the password
+3. Server stores email + hashed_password in users table
+4. Server returns user info (without password) in response
+5. Server returns 201 Created
+
+---
+
+## Login Flow
+
+1. Client sends email + password
+2. Server looks up user by email
+3. If user not found → 403 Forbidden
+4. Server verifies password against stored hash
+5. If password wrong → 403 Forbidden
+6. If correct → generate and return a JWT token
+7. Client stores the token and sends it with every subsequent request
+
+---
+
+# PART 9 — JWT Tokens
+
+---
+
+## What is a JWT?
+
+JWT = **JSON Web Token**. A secure way to transmit information as a compact, self-contained token.
+
+- Pronounced "jot"
+- When a user logs in, the server gives them a JWT
+- The client stores it and sends it back with every request (in the Authorization header)
+- The server verifies the token and knows who the user is
+
+**Why JWT is better than sessions:**
+- Sessions require server to store data → doesn't scale well
+- JWT is stateless — the token itself contains all needed info
+- Server just needs to verify the signature → no database lookup needed
+
+---
+
+## JWT Structure
+
+A JWT has 3 parts separated by dots: `header.payload.signature`
+
+**1. Header** (base64 encoded)
+- Algorithm used for signing (e.g., HS256)
+- Token type: "JWT"
+
+**2. Payload** (base64 encoded)
+- The actual data (claims) — user id, email, expiry time
+- NOT encrypted — anyone can decode it. Don't put sensitive data here.
+- Common claims: `sub` (subject = user id), `exp` (expiry), `iat` (issued at)
+
+**3. Signature**
+- Header + Payload signed with a secret key using the algorithm specified
+- This is what makes JWT secure — only your server knows the secret key
+- If anyone tampers with the payload, the signature won't match and the token is rejected
+
+> JWT is like a signed document. Anyone can read it. But only the signer (your server) can create one that passes verification.
+
+---
+
+## Creating JWT Tokens
 
 ```python
-# routers/users.py
-@router.post("/users", status_code=201, response_model=schemas.UserResponse)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    # Hash password before storing
-    user.password = utils.hash_password(user.password)
-    new_user = models.User(**user.dict())
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
-```
-
-## JWT Token Flow
-
-```
-Client sends: POST /login  {email, password}
-            ↓
-Server: verify credentials against DB
-            ↓
-Server: create JWT token  {sub: user_id, exp: expiry}
-            ↓
-Server returns: {access_token: "eyJ...", token_type: "bearer"}
-            ↓
-Client stores the token
-            ↓
-Client sends: GET /posts  Authorization: Bearer eyJ...
-            ↓
-Server: decode & verify token → extract user_id → process request
-```
-
-## JWT Implementation
-
-```python
-# oauth2.py
-from jose import JWTError, jwt
+from jose import jwt
 from datetime import datetime, timedelta
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
 
-SECRET_KEY = "your-secret-key-here"   # use env variable in production
+SECRET_KEY = "your-secret-key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 def create_access_token(data: dict):
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
-def verify_access_token(token: str, credentials_exception):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: str = payload.get("sub")
-        if user_id is None:
-            raise credentials_exception
-        return schemas.TokenData(id=user_id)
-    except JWTError:
-        raise credentials_exception
-
-def get_current_user(token: str = Depends(oauth2_scheme),
-                     db: Session = Depends(get_db)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    token_data = verify_access_token(token, credentials_exception)
-    user = db.query(models.User).filter(models.User.id == token_data.id).first()
-    return user
 ```
 
-## Login Route
+- `pip install python-jose[cryptography]`
+- `data` → the payload (usually `{"sub": str(user_id)}`)
+- `exp` → expiry time — tokens expire for security (user must re-login)
+- Secret key should be long, random, and NEVER committed to git
+
+---
+
+## Verifying JWT Tokens (OAuth2 & Depends)
+
+FastAPI has built-in OAuth2 support:
 
 ```python
-# routers/auth.py
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 
-@router.post("/login")
-def login(user_credentials: OAuth2PasswordRequestForm = Depends(),
-          db: Session = Depends(get_db)):
-    # OAuth2PasswordRequestForm gives .username and .password
-    user = db.query(models.User).filter(
-        models.User.email == user_credentials.username
-    ).first()
-
-    if not user or not utils.verify_password(user_credentials.password, user.password):
-        raise HTTPException(status_code=403, detail="Invalid credentials")
-
-    access_token = oauth2.create_access_token(data={"sub": str(user.id)})
-    return {"access_token": access_token, "token_type": "bearer"}
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 ```
 
-## Protecting Routes
+- `OAuth2PasswordBearer` → tells FastAPI where the login endpoint is
+- When used as a dependency, it automatically extracts the Bearer token from the Authorization header
+- Your verify function decodes the token, checks expiry, and returns the user ID
 
+**Protecting a route:**
 ```python
-# Any route that requires authentication:
-@router.post("/posts", status_code=201)
-def create_post(
-    post: schemas.PostCreate,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(oauth2.get_current_user)   # ← protects route
-):
-    new_post = models.Post(owner_id=current_user.id, **post.dict())
-    db.add(new_post)
-    db.commit()
-    db.refresh(new_post)
-    return new_post
+@app.get("/posts")
+def get_posts(current_user = Depends(get_current_user)):
+    # only runs if token is valid
+    pass
 ```
 
-## FastAPI Routers (Splitting Routes)
+- `Depends(get_current_user)` → runs the auth check before the function. If auth fails, request is rejected automatically.
+
+---
+
+## Token Expiry
+
+- Short-lived tokens (15-60 min) are standard for security
+- After expiry, user must log in again to get a new token
+- In production apps: use **refresh tokens** — long-lived tokens used only to get new access tokens without re-login
+
+---
+
+# PART 10 — Routers & Code Organization
+
+---
+
+## Why Organize Code?
+
+Keeping all routes in `main.py` becomes unmanageable as the app grows.
+
+- 200+ lines in one file → hard to read, debug, and maintain
+- Multiple people working on the same file → constant merge conflicts
+- Solution: split routes into separate files using **Routers**
+
+---
+
+## APIRouter
 
 ```python
-# routers/posts.py
+# routers/post.py
 from fastapi import APIRouter
 
 router = APIRouter(
-    prefix="/posts",          # all routes here start with /posts
-    tags=["Posts"]            # groups routes in Swagger docs
+    prefix="/posts",        # all routes here automatically start with /posts
+    tags=["Posts"]          # groups these routes in the docs
 )
 
-@router.get("/")              # full path: /posts/
-@router.post("/")             # full path: /posts/
-@router.get("/{id}")          # full path: /posts/{id}
+@router.get("/")            # actual path becomes /posts/
+def get_posts():
+    pass
+```
 
-# main.py
-from .routers import posts, users, auth
-app.include_router(posts.router)
-app.include_router(users.router)
+- `prefix` → prepended to all routes in this router. Avoids repeating `/posts` in every route
+- `tags` → groups endpoints in Swagger docs (makes docs clean)
+
+**Registering the router in main.py:**
+```python
+from routers import post, user, auth
+
+app.include_router(post.router)
+app.include_router(user.router)
 app.include_router(auth.router)
 ```
 
 ---
 
-# Section 9: Relationships
+## Recommended File Structure
 
-## 📖 Theory
-
-Relational databases are powerful because tables can *relate* to each other. A **foreign key** is a column in one table that references the primary key of another table. For example, a `posts` table has an `owner_id` column that references `users.id`. This enforces data integrity — you cannot create a post for a user that doesn't exist.
-
-SQL **JOINs** combine rows from multiple tables based on a related column. This is the bread and butter of relational databases. SQLAlchemy's `relationship()` function mirrors this at the ORM level — it lets you access related objects via Python attributes (e.g., `post.owner` to get the User who wrote a post) without writing any JOIN SQL yourself.
+```
+myapp/
+├── main.py              → app setup, include routers
+├── database.py          → DB connection, Session
+├── models.py            → SQLAlchemy table models
+├── schemas.py           → Pydantic input/output models
+├── oauth2.py            → JWT token logic
+├── utils.py             → helper functions (password hash, etc.)
+└── routers/
+    ├── post.py          → all /posts endpoints
+    ├── user.py          → all /users endpoints
+    └── auth.py          → /login endpoint
+```
 
 ---
 
-## Foreign Keys in PostgreSQL
+# PART 11 — Database Relationships
 
-```sql
-ALTER TABLE posts
-ADD COLUMN owner_id INT REFERENCES users(id) ON DELETE CASCADE;
--- ON DELETE CASCADE: if the user is deleted, their posts are also deleted
-```
+---
 
-## SQLAlchemy Foreign Keys & Relationships
+## What are Relationships?
+
+Data is rarely isolated — posts have authors, comments belong to posts, orders have products.
+
+- **Foreign Key** → a column in one table that references the primary key of another table
+- This creates a link between the two tables
+- The database enforces this link — you can't create a post with a non-existent user_id
+
+**One-to-Many:**
+- One user → many posts
+- One post → many comments
+- The "many" side holds the foreign key
+
+**Many-to-Many:**
+- Many users can like many posts
+- Requires a **junction table** (e.g., votes table with user_id and post_id)
+
+---
+
+## Adding Foreign Key in SQLAlchemy
 
 ```python
-# models.py
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
-
 class Post(Base):
     __tablename__ = "posts"
-    # ... existing columns ...
-    owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"),
-                      nullable=False)
 
-    # This creates a Python attribute to access the related User object
-    owner = relationship("User")   # returns a User object when accessed
-
-class User(Base):
-    __tablename__ = "users"
-    # ... existing columns ...
+    id = Column(Integer, primary_key=True)
+    title = Column(String, nullable=False)
+    owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    owner = relationship("User")  # sets up the Python-level relationship
 ```
 
-## Using Relationships in Routes
+- `ForeignKey("users.id")` → this column references the `id` column in the `users` table
+- `ondelete="CASCADE"` → if the user is deleted, all their posts are deleted automatically
+- `relationship("User")` → lets you access `post.owner` and get the User object (SQLAlchemy handles the JOIN)
 
-```python
-# Accessing the owner of a post (SQLAlchemy auto-JOINs)
-post = db.query(models.Post).filter(models.Post.id == id).first()
-print(post.owner.email)   # fetches related User automatically
+---
+
+## ondelete Options
+
+| Option | Behavior |
+|--------|---------|
+| `CASCADE` | Delete child rows when parent is deleted |
+| `SET NULL` | Set the foreign key to NULL when parent is deleted |
+| `RESTRICT` | Prevent deletion of parent if child rows exist |
+| `SET DEFAULT` | Set foreign key to column's default value |
+
+---
+
+## Ownership & Authorization
+
+Once posts have an `owner_id`:
+- Only the owner should be able to update or delete their own posts
+- Check: `if post.owner_id != current_user.id: raise HTTPException(403, "Not authorized")`
+- 403 Forbidden → you're authenticated (logged in) but not authorized to do this action
+
+---
+
+# PART 12 — Votes & SQL Joins
+
+---
+
+## Votes / Likes Feature
+
+Users can upvote posts — but only once per post per user.
+
+**Junction Table design:**
+```
+votes table:
+- post_id (FK → posts.id)
+- user_id (FK → users.id)
+- Primary Key = (post_id, user_id) combined → composite primary key
 ```
 
-## Ownership Enforcement
+- Composite primary key = combination of two columns forms the unique ID
+- This automatically prevents the same user from voting on the same post twice (DB-level enforcement)
+
+---
+
+## SQL Joins
+
+A JOIN combines rows from two tables based on a related column.
+
+**Why JOINs?**
+- You often need data from multiple tables in one query
+- Example: Get all posts WITH the owner's name AND vote count
+- Without JOIN: 3 separate queries. With JOIN: 1 query.
+
+**Types of JOINs:**
+
+| Type | Returns |
+|------|---------|
+| `INNER JOIN` | Only rows where the condition matches in BOTH tables |
+| `LEFT JOIN` | All rows from left table + matching rows from right (NULL if no match) |
+| `RIGHT JOIN` | All rows from right table + matching rows from left |
+| `FULL OUTER JOIN` | All rows from both tables |
+
+**Most common:** LEFT JOIN (keep all posts even if they have 0 votes)
+
+---
+
+## JOINs in SQLAlchemy
 
 ```python
-@router.delete("/{id}", status_code=204)
-def delete_post(id: int, db: Session = Depends(get_db),
-                current_user = Depends(oauth2.get_current_user)):
-    post_query = db.query(models.Post).filter(models.Post.id == id)
-    post = post_query.first()
+from sqlalchemy import func
 
-    if post is None:
-        raise HTTPException(status_code=404, detail="Not found")
-
-    if post.owner_id != current_user.id:
-        raise HTTPException(status_code=403,
-                           detail="Not authorized to perform this action")
-
-    post_query.delete(synchronize_session=False)
-    db.commit()
+results = db.query(
+    Post, func.count(Vote.post_id).label("votes")
+).join(
+    Vote, Vote.post_id == Post.id, isouter=True   # LEFT JOIN
+).group_by(Post.id).all()
 ```
 
-## Query Parameters
+- `func.count()` → SQL COUNT aggregate function
+- `.label("votes")` → alias the result column
+- `isouter=True` → makes it a LEFT JOIN (include posts with 0 votes)
+- `.group_by(Post.id)` → needed when using aggregate functions — groups rows before counting
 
-```python
-@router.get("/")
-def get_posts(
-    db: Session = Depends(get_db),
-    limit: int = 10,         # /posts?limit=5
-    skip: int = 0,           # /posts?skip=20
-    search: Optional[str] = ""  # /posts?search=python
-):
-    posts = db.query(models.Post)\
-               .filter(models.Post.title.contains(search))\
-               .limit(limit)\
-               .offset(skip)\
-               .all()
-    return posts
+---
+
+# PART 13 — Environment Variables
+
+---
+
+## What are Environment Variables?
+
+Environment variables are configuration values stored OUTSIDE your code.
+
+**Why?**
+- Database passwords, secret keys, API keys — these must NOT be in your source code
+- If you push your code to GitHub with your DB password → anyone can access your database
+- Different environments (dev, staging, production) need different values
+- Environment variables let you change config without changing code
+
+---
+
+## .env File and python-dotenv
+
+A `.env` file stores your environment variables locally.
+
 ```
-
-## Environment Variables
-
-```python
-# .env file (never commit to git)
-DATABASE_HOSTNAME=localhost
-DATABASE_PORT=5432
-DATABASE_NAME=fastapi
-DATABASE_USERNAME=postgres
-DATABASE_PASSWORD=yourpassword
+DATABASE_URL=postgresql://user:password@localhost/mydb
 SECRET_KEY=your-super-secret-key
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
+```
 
-# config.py — Pydantic validates env vars too
-from pydantic import BaseSettings
+- `pip install python-dotenv`
+- Load it with `load_dotenv()` — reads the .env file into environment
+- **ALWAYS add `.env` to `.gitignore`** — never commit this file
+
+---
+
+## Pydantic Settings (Better Approach)
+
+FastAPI's recommended way to handle config:
+
+```python
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    database_hostname: str
-    database_port: str
-    database_name: str
-    database_username: str
-    database_password: str
+    database_url: str
     secret_key: str
-    algorithm: str
-    access_token_expire_minutes: int
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
 
     class Config:
         env_file = ".env"
 
 settings = Settings()
-
-# Usage
-from .config import settings
-DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}/{settings.database_name}"
 ```
+
+- `pydantic_settings` automatically reads from environment variables AND `.env` file
+- Validates types — if `access_token_expire_minutes` is missing or not an int, it fails at startup
+- Access anywhere: `settings.secret_key`
+- `pip install pydantic-settings`
 
 ---
 
-# Section 10: Vote / Like System
-
-## 📖 Theory
-
-A like/vote system looks simple on the surface — a user clicks like on a post. But the data model requires thought. You can't add a "likes" column to the posts table (that would only store a count, not *who* liked it, so you couldn't prevent double-voting). The correct design is a separate **votes table** with a **composite primary key** on `(post_id, user_id)`. This means each combination of post + user can only exist once — the database itself enforces the "one vote per user per post" rule.
+# PART 14 — CORS
 
 ---
 
-## Votes Table Schema
+## What is CORS?
 
-```python
-# models.py
-class Vote(Base):
-    __tablename__ = "votes"
+CORS = **Cross-Origin Resource Sharing**. A browser security mechanism.
 
-    post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"),
-                     primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"),
-                     primary_key=True)
-    # Composite primary key: (post_id, user_id) pair must be unique
-```
-
-## Vote Route
-
-```python
-# schemas.py
-class Vote(BaseModel):
-    post_id: int
-    dir: int   # 1 = upvote, 0 = remove vote
-
-# routers/votes.py
-@router.post("/vote")
-def vote(vote: schemas.Vote, db: Session = Depends(get_db),
-         current_user = Depends(oauth2.get_current_user)):
-    post = db.query(models.Post).filter(models.Post.id == vote.post_id).first()
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
-
-    vote_query = db.query(models.Vote).filter(
-        models.Vote.post_id == vote.post_id,
-        models.Vote.user_id == current_user.id
-    )
-    found_vote = vote_query.first()
-
-    if vote.dir == 1:   # upvote
-        if found_vote:
-            raise HTTPException(status_code=409, detail="Already voted")
-        new_vote = models.Vote(post_id=vote.post_id, user_id=current_user.id)
-        db.add(new_vote)
-        db.commit()
-        return {"message": "Successfully voted"}
-    else:               # remove vote
-        if not found_vote:
-            raise HTTPException(status_code=404, detail="Vote does not exist")
-        vote_query.delete(synchronize_session=False)
-        db.commit()
-        return {"message": "Vote removed"}
-```
-
-## SQL JOINs
-
-```sql
--- LEFT JOIN: all posts + vote count (including posts with 0 votes)
-SELECT posts.*, COUNT(votes.post_id) AS votes
-FROM posts
-LEFT JOIN votes ON posts.id = votes.post_id
-GROUP BY posts.id;
-
--- INNER JOIN: only posts that have at least one vote
-SELECT posts.*, COUNT(votes.post_id) AS votes
-FROM posts
-INNER JOIN votes ON posts.id = votes.post_id
-GROUP BY posts.id;
-```
-
-## SQLAlchemy Joins
-
-```python
-from sqlalchemy import func
-
-# Get all posts with their vote count
-posts = db.query(models.Post, func.count(models.Vote.post_id).label("votes"))\
-           .join(models.Vote, models.Vote.post_id == models.Post.id,
-                 isouter=True)\   # isouter=True = LEFT JOIN
-           .group_by(models.Post.id)\
-           .all()
-```
+- **Origin** = scheme + domain + port (e.g., `http://localhost:3000`)
+- By default, browsers block JavaScript from making requests to a DIFFERENT origin than the page
+- Example: your React app at `localhost:3000` can't call your API at `localhost:8000` — DIFFERENT ports = different origins
+- CORS is a BROWSER restriction — Postman and mobile apps are NOT affected (they're not browsers)
 
 ---
 
-# Section 11: Database Migrations with Alembic
+## How CORS Works
 
-## 📖 Theory
-
-`models.Base.metadata.create_all()` is fine for development, but it has a critical flaw in production: it only creates tables that don't exist yet — it **never alters** existing tables. So if you add a column to a model, `create_all` won't add that column to your production database. Alembic solves this by tracking every schema change as a versioned "revision" file. You can apply migrations forward (upgrade) or backward (rollback/downgrade) at any time — it's Git for your database schema.
-
----
-
-## Alembic Setup
-
-```bash
-pip install alembic
-alembic init alembic   # creates alembic/ directory and alembic.ini
-```
-
-```python
-# alembic/env.py — edit these two lines:
-from app.models import Base          # import your models
-target_metadata = Base.metadata      # point to your models' metadata
-```
-
-```ini
-# alembic.ini — set your database URL
-sqlalchemy.url = postgresql://postgres:password@localhost/fastapi
-```
-
-## Creating & Running Migrations
-
-```bash
-# Create a new revision (migration file)
-alembic revision --autogenerate -m "create posts table"
-# --autogenerate compares your models to the current DB and generates the diff
-
-# Apply all pending migrations
-alembic upgrade head
-
-# Roll back the most recent migration
-alembic downgrade -1
-
-# Roll back to a specific revision
-alembic downgrade abc123
-
-# View migration history
-alembic history
-alembic current   # shows current revision applied to DB
-```
-
-## Migration File Structure
-
-```python
-# alembic/versions/abc123_create_posts_table.py
-def upgrade():
-    op.create_table('posts',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('title', sa.String(), nullable=False),
-        sa.PrimaryKeyConstraint('id')
-    )
-
-def downgrade():
-    op.drop_table('posts')
-```
-
-> ✅ In production, **always use Alembic** for schema changes. Remove `create_all()` from `main.py` once Alembic is set up.
+1. Browser sends a **preflight** request (`OPTIONS` method) asking "is this allowed?"
+2. Server responds with headers saying which origins, methods, and headers are allowed
+3. If allowed, browser proceeds with the actual request
+4. If not allowed, browser blocks the request (even if server would have processed it)
 
 ---
 
-# Section 12: Pre-Deployment Checklist
-
-## 📖 Theory
-
-CORS (Cross-Origin Resource Sharing) is a browser security mechanism that blocks web pages from making requests to a different domain than the one that served the page. By default, if your frontend is at `http://myapp.com` and your API is at `http://api.myapp.com`, the browser will block the API calls. You must explicitly tell your API which origins are allowed to access it. In FastAPI, this is handled by middleware.
-
----
-
-## CORS Setup
+## Enabling CORS in FastAPI
 
 ```python
 from fastapi.middleware.cors import CORSMiddleware
 
-# List of allowed frontend origins
-origins = [
-    "https://www.google.com",      # example — add your real frontend URL
-    "http://localhost:3000",        # React dev server
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,         # use ["*"] only for fully public APIs
-    allow_credentials=True,
-    allow_methods=["*"],           # GET, POST, PUT, DELETE, etc.
-    allow_headers=["*"],
+    allow_origins=["https://yourfrontend.com"],   # which origins can call this API
+    allow_credentials=True,    # allow cookies/auth headers
+    allow_methods=["*"],       # which HTTP methods are allowed
+    allow_headers=["*"],       # which headers are allowed
 )
 ```
 
-## Git & GitHub Prep
-- Initialize Git repo: `git init`
-- Create `.gitignore` — exclude `venv/`, `.env`, `__pycache__/`, `*.pyc`
-- Push to GitHub (private repo recommended for production code with secrets)
-- Create `requirements.txt`:
+- `allow_origins=["*"]` → allow ALL origins (development only — dangerous in production)
+- In production: list only the specific frontend domains you trust
+- CORS must be added as middleware BEFORE your routes
+
+---
+
+# PART 15 — Git Basics
+
+---
+
+## What is Git?
+
+Git is a **version control system** — it tracks changes to your code over time.
+
+- Every change is saved as a "commit" — a snapshot of your code at that point
+- You can go back to any previous commit
+- Multiple people can work on the same codebase without overwriting each other
+- **GitHub/GitLab** → cloud hosting for git repositories
+
+---
+
+## Core Git Concepts
+
+- **Repository (repo)** → the folder being tracked by git
+- **Commit** → a saved snapshot of changes with a message describing what changed
+- **Branch** → an independent line of development
+- **main/master** → the default branch
+- **Remote** → a copy of the repo on another server (GitHub)
+- **Clone** → download a remote repo to your machine
+- **Push** → upload your commits to the remote
+- **Pull** → download and merge new commits from remote
+
+---
+
+## Essential Git Commands
+
 ```bash
-pip freeze > requirements.txt
+git init                          # start tracking a folder
+git clone <url>                   # copy a remote repo locally
+
+git status                        # see what files changed
+git add .                         # stage all changes
+git add filename                  # stage specific file
+git commit -m "message"           # save snapshot
+
+git push origin main              # upload to GitHub
+git pull origin main              # download from GitHub
+
+git branch feature-login          # create a new branch
+git checkout feature-login        # switch to that branch
+git merge feature-login           # merge branch into current
 ```
 
 ---
 
-# Section 13: Deployment — Heroku
+## .gitignore
 
-## 📖 Theory
+A `.gitignore` file tells Git which files and folders to NEVER track.
 
-Heroku is a **Platform as a Service (PaaS)** — you push code, Heroku handles the server, OS, and infrastructure. It's beginner-friendly but has less control than managing your own server. The `Procfile` tells Heroku what command to run to start your app.
-
----
-
-## Steps
-
-```bash
-# 1. Install Heroku CLI, login
-heroku login
-
-# 2. Create Heroku app
-heroku create your-app-name
-
-# 3. Procfile (in project root — no extension)
-web: uvicorn app.main:app --host 0.0.0.0 --port $PORT
-
-# 4. Add Postgres addon
-heroku addons:create heroku-postgresql:hobby-dev
-
-# 5. Set environment variables on Heroku
-heroku config:set SECRET_KEY=yourkey DATABASE_HOSTNAME=... etc
-
-# 6. Run Alembic migrations on Heroku Postgres
-heroku run "alembic upgrade head"
-
-# 7. Deploy
-git push heroku main
-
-# 8. View logs
-heroku logs --tail
+```
+.env                 # environment variables — NEVER commit this
+__pycache__/         # Python bytecode cache
+venv/                # virtual environment — huge, not needed
+*.pyc                # compiled Python files
 ```
 
----
-
-# Section 14: Deployment — Ubuntu (VPS)
-
-## 📖 Theory
-
-Deploying to a **VPS (Virtual Private Server)** like a DigitalOcean Droplet or AWS EC2 instance gives full control over the server. You manage the OS, packages, and processes yourself. **Gunicorn** is a production-grade WSGI/ASGI server — it manages multiple worker processes for handling concurrent requests. **Nginx** sits in front as a reverse proxy — it handles SSL, static files, and forwards API requests to Gunicorn.
+> Critical: if you accidentally commit `.env`, change your secrets immediately even after removing the file — git history keeps old content.
 
 ---
 
-## Steps Overview
+# PART 16 — Deployment on Linux Server
+
+---
+
+## Deployment Overview
+
+Deployment = making your API accessible on the internet, running 24/7 on a real server.
+
+**Options:**
+- **VPS (Virtual Private Server)** → e.g., DigitalOcean Droplet, AWS EC2, Linode. You manage everything.
+- **PaaS (Platform as a Service)** → e.g., Render, Railway, Heroku. They manage the server for you.
+- **Serverless** → e.g., AWS Lambda. You pay per request, not per server.
+
+---
+
+## Setting Up a Ubuntu Server (VPS)
 
 ```bash
-# 1. Create Ubuntu VM (DigitalOcean / AWS / Azure)
-# 2. SSH into the server
+# On your local machine — connect to server
 ssh root@your-server-ip
 
-# 3. Update packages
-sudo apt update && sudo apt upgrade -y
+# Update the system packages
+apt update && apt upgrade -y
 
-# 4. Install Python, pip, venv
-sudo apt install python3 python3-pip python3-venv -y
+# Install Python and pip
+apt install python3 python3-pip -y
 
-# 5. Install Postgres
-sudo apt install postgresql postgresql-contrib -y
-sudo systemctl start postgresql
+# Install PostgreSQL
+apt install postgresql postgresql-contrib -y
+```
 
-# 6. Create DB user and database
-sudo -u postgres psql
-CREATE USER fastapi WITH PASSWORD 'password';
-CREATE DATABASE fastapi OWNER fastapi;
+---
 
-# 7. Create app user (don't run app as root)
-sudo adduser deploy
-sudo su - deploy
+## Running Your App on Server
 
-# 8. Clone repo and set up venv
-git clone https://github.com/yourrepo.git
-cd yourrepo
-python3 -m venv venv && source venv/bin/activate
+```bash
+# Clone your code
+git clone https://github.com/youruser/yourapp.git
+cd yourapp
+
+# Install dependencies
 pip install -r requirements.txt
 
-# 9. Set environment variables
-# Edit /etc/environment or use .env file
+# Set up environment variables (create .env manually on server)
+nano .env
 
-# 10. Run Alembic migrations
-alembic upgrade head
-
-# 11. Install Gunicorn
-pip install gunicorn
-
-# 12. Create systemd service (auto-start on boot)
-# /etc/systemd/system/fastapi.service
-[Unit]
-Description=FastAPI Application
-After=network.target
-
-[Service]
-User=deploy
-WorkingDirectory=/home/deploy/yourrepo
-Environment="PATH=/home/deploy/yourrepo/venv/bin"
-ExecStart=/home/deploy/yourrepo/venv/bin/gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app
-
-[Install]
-WantedBy=multi-user.target
-
-sudo systemctl start fastapi
-sudo systemctl enable fastapi   # start on boot
-
-# 13. Install Nginx
-sudo apt install nginx -y
-
-# 14. Configure Nginx as reverse proxy
-# /etc/nginx/sites-available/fastapi
-server {
-    listen 80;
-    server_name yourdomain.com;
-
-    location / {
-        proxy_pass http://localhost:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-
-sudo ln -s /etc/nginx/sites-available/fastapi /etc/nginx/sites-enabled/
-sudo systemctl restart nginx
-
-# 15. Set up SSL with Certbot
-sudo apt install certbot python3-certbot-nginx -y
-sudo certbot --nginx -d yourdomain.com
-
-# 16. Set up Firewall
-sudo ufw allow OpenSSH
-sudo ufw allow 'Nginx Full'
-sudo ufw enable
+# Test it runs
+uvicorn main:app
 ```
 
 ---
 
-# Section 15: Docker
+## requirements.txt
 
-## 📖 Theory
+A file that lists ALL Python packages your project needs.
 
-Docker solves the "works on my machine" problem. A **Docker image** is a complete, self-contained snapshot of your application and all its dependencies (Python version, pip packages, OS libraries). A **container** is a running instance of that image. Because the image includes everything needed, your app runs identically on your laptop, a teammate's Mac, and a production Ubuntu server. **Docker Compose** extends this to run multiple containers together (your API + your database) with a single command.
+```bash
+pip freeze > requirements.txt    # generate from your current environment
+pip install -r requirements.txt  # install everything from the file
+```
+
+- Always keep this updated before pushing code
+- This is how the server knows what to install
 
 ---
 
-## Dockerfile
+## Running as a Background Process
+
+You don't want your app tied to your SSH session. Use a process manager.
+
+**Systemd service (Linux):**
+- Create a service file that tells Linux to run your app
+- Auto-starts on server reboot
+- Restarts automatically if it crashes
+- `systemctl start myapp`, `systemctl status myapp`, `systemctl enable myapp`
+
+---
+
+# PART 17 — Nginx & Process Management
+
+---
+
+## What is Nginx?
+
+Nginx (pronounced "engine-x") is a high-performance web server.
+
+**Why do you need Nginx if you already have Uvicorn?**
+- Uvicorn is an ASGI server — good at running Python async code
+- Nginx sits in FRONT of Uvicorn as a **reverse proxy**
+
+**What Nginx does:**
+- Handles incoming HTTPS traffic and SSL certificates
+- Forwards requests to Uvicorn running on localhost
+- Serves static files directly (much faster than Python)
+- Load balancing (distribute traffic across multiple app instances)
+- Rate limiting and security features
+- Handles many concurrent connections efficiently
+
+---
+
+## Nginx as Reverse Proxy
+
+```
+Internet → Nginx (port 443/80) → Uvicorn (port 8000, localhost only)
+```
+
+- Nginx accepts the public request
+- Forwards it to Uvicorn internally
+- Uvicorn processes it with Python
+- Response goes back through Nginx to the internet
+- Uvicorn is never directly exposed to the internet
+
+---
+
+## Gunicorn
+
+Gunicorn is a WSGI/ASGI process manager — runs multiple instances of Uvicorn.
+
+- `gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app`
+- `-w 4` → 4 worker processes (handle 4 requests simultaneously)
+- A single Uvicorn process = single-threaded. Multiple workers = parallelism.
+- Rule of thumb for workers: `2 × number of CPU cores + 1`
+
+---
+
+## SSL / HTTPS
+
+- HTTPS = HTTP with SSL encryption
+- All data is encrypted between browser and server
+- Required for production — browsers show "Not Secure" for HTTP
+- Use **Let's Encrypt** + **Certbot** for free SSL certificates
+- Certbot automatically configures Nginx for HTTPS
+
+---
+
+# PART 18 — Docker
+
+---
+
+## What is Docker?
+
+Docker is a tool that packages your application and ALL its dependencies into a portable unit called a **container**.
+
+- The container runs the same way everywhere — your machine, teammate's machine, server — no "it works on my machine" problems
+- Containers are isolated — they don't interfere with each other or the host system
+- Much lighter than Virtual Machines — containers share the OS kernel
+
+---
+
+## Key Docker Concepts
+
+**Image** → a blueprint for a container. Read-only. Like a class.  
+**Container** → a running instance of an image. Like an object.  
+**Dockerfile** → instructions for building an image. Step-by-step recipe.  
+**Docker Hub** → public registry of pre-built images (like GitHub but for Docker images).  
+**Volume** → persistent storage attached to a container (data survives container restarts).  
+**Docker Compose** → tool to run multiple containers together (app + database).
+
+---
+
+## Dockerfile — Building Your App Image
 
 ```dockerfile
-# Use official Python image as base
-FROM python:3.9
+FROM python:3.11            # start from official Python image
 
-# Set working directory inside container
-WORKDIR /usr/src/app
+WORKDIR /app                # set working directory inside container
 
-# Copy and install dependencies first (Docker layer caching optimization)
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt .     # copy requirements first (caching optimization)
+RUN pip install -r requirements.txt   # install dependencies
 
-# Copy the rest of the app code
-COPY . .
+COPY . .                    # copy rest of your code
 
-# Run the app
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
-## Docker Compose
+- **Each line is a layer** — Docker caches layers. If requirements.txt didn't change, that layer isn't rebuilt.
+- `FROM` → always start from a base image
+- `WORKDIR` → all subsequent commands run from this directory
+- `COPY` → copy files from host into the container
+- `RUN` → execute a command during build
+- `CMD` → command to run when container starts
+
+---
+
+## Docker Compose — Multiple Containers
+
+Real apps need multiple containers (API + database + cache). Docker Compose manages them together.
 
 ```yaml
 # docker-compose.yml
 version: "3"
-
 services:
   api:
     build: .
     ports:
       - "8000:8000"
-    volumes:
-      - .:/usr/src/app    # bind mount: local changes reflect in container
-    env_file:
-      - ./.env
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db/mydb
     depends_on:
-      - postgres
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      - db
 
-  postgres:
-    image: postgres
-    env_file:
-      - ./.env
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=mydb
     volumes:
-      - postgres-data:/var/lib/postgresql/data   # named volume: persists data
+      - postgres-data:/var/lib/postgresql/data
 
 volumes:
   postgres-data:
 ```
 
+- `services` → each container is a service
+- `ports: "8000:8000"` → maps host port to container port (host:container)
+- `depends_on` → start db before api
+- `volumes` → persists database data (without this, data is lost when container stops)
+
+**Commands:**
 ```bash
-# Build and start all containers
-docker-compose up -d --build
-
-# Stop all containers
-docker-compose down
-
-# View logs
-docker-compose logs -f
-
-# Exec into running container
-docker-compose exec api bash
-
-# Run Alembic inside the container
-docker-compose exec api alembic upgrade head
-```
-
-## Production vs Development
-- **Dev**: Use bind mounts (`volumes: .:/app`) + `--reload` flag for hot reload.
-- **Prod**: No bind mounts (image contains all code), no `--reload`, use `gunicorn` with multiple workers.
-
----
-
-# Section 16: Testing with Pytest
-
-## 📖 Theory
-
-Testing is how you verify your code is correct today and stays correct as you change it tomorrow. **Unit tests** test individual functions in isolation. **Integration tests** test how components work together — in this context, making real HTTP requests to your FastAPI app against a real (test) database. The key principle: **tests should be isolated and repeatable**. Each test should start with a clean state, run, assert, and clean up — so tests never depend on each other's side effects. Pytest **fixtures** are the mechanism that handles this setup/teardown lifecycle cleanly.
-
----
-
-## Installation
-
-```bash
-pip install pytest httpx pytest-asyncio
-```
-
-## Your First Test
-
-```python
-# tests/test_calculations.py
-def add(a, b):
-    return a + b
-
-def test_add():
-    result = add(2, 3)
-    assert result == 5
-
-def test_add_negative():
-    assert add(-1, 1) == 0
-```
-
-```bash
-pytest                     # run all tests
-pytest -v                  # verbose (show each test name)
-pytest -s                  # show print/stdout output
-pytest -v -s               # combine both
-pytest tests/test_users.py # run specific file
-```
-
-## Parametrize (DRY Testing)
-
-```python
-import pytest
-
-@pytest.mark.parametrize("a, b, expected", [
-    (2, 3, 5),
-    (-1, 1, 0),
-    (0, 0, 0),
-    (100, -50, 50),
-])
-def test_add(a, b, expected):
-    assert add(a, b) == expected
-# Runs 4 tests from one function
-```
-
-## Fixtures
-
-```python
-import pytest
-
-@pytest.fixture
-def client(session):
-    # Runs before each test that uses this fixture
-    def override_get_db():
-        yield session
-
-    app.dependency_overrides[get_db] = override_get_db
-    yield TestClient(app)
-    # Runs after each test (teardown)
-
-@pytest.fixture
-def session():
-    # Create a fresh test database for each test
-    Base.metadata.create_all(bind=engine)
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-        Base.metadata.drop_all(bind=engine)
-```
-
-## Test Database Setup
-
-```python
-# tests/database.py
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from app.database import Base
-
-SQLALCHEMY_TEST_DATABASE_URL = "postgresql://postgres:password@localhost/fastapi_test"
-
-engine = create_engine(SQLALCHEMY_TEST_DATABASE_URL)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-```
-
-## FastAPI TestClient
-
-```python
-from fastapi.testclient import TestClient
-from app.main import app
-
-def test_root(client):
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.json() == {"message": "Hello World"}
-```
-
-## Integration Tests — Users & Posts
-
-```python
-def test_create_user(client):
-    response = client.post("/users", json={
-        "email": "test@example.com",
-        "password": "password123"
-    })
-    assert response.status_code == 201
-    data = response.json()
-    assert data["email"] == "test@example.com"
-    assert "id" in data
-    assert "password" not in data  # ensure password not returned
-
-def test_login(client, test_user):
-    response = client.post("/login", data={
-        "username": test_user["email"],
-        "password": test_user["password"]
-    })
-    assert response.status_code == 200
-    assert "access_token" in response.json()
-
-def test_get_all_posts_unauthorized(client):
-    response = client.get("/posts")
-    assert response.status_code == 401
-
-def test_create_post(authorized_client, test_user):
-    response = authorized_client.post("/posts", json={
-        "title": "Test Post",
-        "content": "Test Content"
-    })
-    assert response.status_code == 201
-    data = response.json()
-    assert data["title"] == "Test Post"
-    assert data["owner_id"] == test_user["id"]
-```
-
-## Conftest.py
-```python
-# tests/conftest.py — shared fixtures available to ALL test files
-# Place test_user, authorized_client, session, client fixtures here
-# Pytest automatically discovers conftest.py
+docker compose up -d          # start all services in background
+docker compose down           # stop and remove containers
+docker compose logs api       # view logs of a service
+docker compose exec api bash  # get a terminal inside a container
 ```
 
 ---
 
-# Section 17: CI/CD Pipeline with GitHub Actions
+## Why Docker Matters
 
-## 📖 Theory
-
-CI/CD (Continuous Integration / Continuous Deployment) automates the journey from "push code to GitHub" to "code running in production." **Continuous Integration** means every push automatically runs your test suite — you catch bugs before they merge into the main branch. **Continuous Deployment** means if tests pass, the code is automatically deployed. This is how professional engineering teams ship: you push code, the pipeline handles the rest. GitHub Actions is GitHub's built-in CI/CD platform — it runs your pipeline in containers defined by YAML files in `.github/workflows/`.
+- Dev environment exactly matches production → fewer "works on my machine" bugs
+- Easy to scale → spin up 10 containers from the same image
+- Rollbacks are easy → revert to a previous image version
+- Standard across the industry → every cloud platform supports Docker
 
 ---
 
-## GitHub Actions Workflow
+# PART 19 — CI/CD with GitHub Actions
+
+---
+
+## What is CI/CD?
+
+CI/CD = **Continuous Integration / Continuous Deployment**
+
+**Continuous Integration (CI):**
+- Every time you push code, automated tests run
+- If tests fail, you're immediately notified — don't break the main branch
+- Catches bugs early, before they reach production
+
+**Continuous Deployment (CD):**
+- After tests pass, code is automatically deployed to the server
+- No manual deployment steps → ship faster, more reliably
+- Push to `main` → tests run → if pass → automatically live in production
+
+---
+
+## GitHub Actions
+
+GitHub Actions is GitHub's built-in CI/CD platform.
+
+- Define automation workflows in YAML files inside `.github/workflows/`
+- Triggered by events: push, pull request, schedule, manual
+- Runs on **runners** → GitHub-managed or self-hosted machines that execute your workflow
+
+---
+
+## Workflow Concepts
+
+**Workflow** → a full automation pipeline (defined in one YAML file)  
+**Trigger (on)** → what event starts the workflow (push to main, PR opened, etc.)  
+**Job** → a group of steps that run on one runner  
+**Step** → a single task (run a command, call an action)  
+**Action** → a reusable step you can import (like a plugin)
+
+---
+
+## Basic CI Pipeline Example
 
 ```yaml
-# .github/workflows/build-deploy.yml
-name: Build and Deploy
+# .github/workflows/build-and-test.yml
+name: Build and Test
 
 on:
   push:
-    branches: [main]    # run on every push to main
-  pull_request:
-    branches: [main]    # run on every PR targeting main
+    branches: [main]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest   # GitHub provides a fresh Ubuntu VM
+  test:
+    runs-on: ubuntu-latest
 
-    # Postgres service container for integration tests
     services:
-      postgres:
-        image: postgres
+      db:
+        image: postgres:15
         env:
-          POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-          POSTGRES_DB: fastapi_test
-        ports:
-          - 5432:5432
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: testdb
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
-      # 1. Checkout code
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      # 2. Set up Python
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.9"
+          python-version: "3.11"
 
-      # 3. Install dependencies
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
-      # 4. Set environment variables from GitHub Secrets
-      - name: Set environment variables
-        run: |
-          echo "DATABASE_HOSTNAME=${{ secrets.DATABASE_HOSTNAME }}" >> $GITHUB_ENV
-          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> $GITHUB_ENV
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
-          # ... other secrets
+      - name: Run tests
+        env:
+          DATABASE_URL: postgresql://postgres:password@localhost/testdb
+        run: pytest
+```
 
-      # 5. Run tests
-      - name: Run Tests
-        run: pytest -v
+---
 
-      # 6. (Optional) Build Docker image
-      - name: Build Docker image
-        run: docker build -t myapp .
+## CD — Deploying After Tests Pass
 
-      # 7. Deploy to Heroku (if tests passed)
-      - name: Deploy to Heroku
-        if: github.ref == 'refs/heads/main'
-        uses: akhileshns/heroku-deploy@v3.12.12
+After tests pass, automatically SSH into your server and pull the latest code:
+
+```yaml
+  deploy:
+    needs: test         # only runs if test job passes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
         with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: "your-heroku-app"
-          heroku_email: "you@example.com"
+          host: ${{ secrets.SERVER_IP }}
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /app
+            git pull origin main
+            pip install -r requirements.txt
+            sudo systemctl restart myapp
 ```
 
-## GitHub Secrets
-- Store all sensitive values (DB password, API keys, SECRET_KEY) in:
-  **GitHub Repo → Settings → Secrets and Variables → Actions → New repository secret**
-- Reference in workflow: `${{ secrets.YOUR_SECRET_NAME }}`
-- Never hardcode secrets in `.yml` files.
+- **Secrets** → store sensitive values (SSH key, server IP) in GitHub repo settings → used in workflow as `${{ secrets.NAME }}`
+- Never hardcode credentials in workflow files
 
 ---
 
-# Quick Reference — Key Concepts
+## Testing with Pytest
 
-## REST API Design
+```python
+# tests/test_posts.py
+from fastapi.testclient import TestClient
+from main import app
 
-| Endpoint | Method | Action | Auth Required |
-|----------|--------|--------|---------------|
-| `/posts` | GET | Get all posts | Optional |
-| `/posts` | POST | Create post | ✅ Yes |
-| `/posts/{id}` | GET | Get one post | Optional |
-| `/posts/{id}` | PUT | Update post (owner only) | ✅ Yes |
-| `/posts/{id}` | DELETE | Delete post (owner only) | ✅ Yes |
-| `/users` | POST | Register | ❌ No |
-| `/users/{id}` | GET | Get user | ✅ Yes |
-| `/login` | POST | Login, get token | ❌ No |
-| `/vote` | POST | Vote on post | ✅ Yes |
+client = TestClient(app)
 
-## Full Request Lifecycle
+def test_get_posts():
+    response = client.get("/posts")
+    assert response.status_code == 200
 
-```
-Client Request
-    ↓
-FastAPI Router (matches path + method)
-    ↓
-Middleware (CORS, auth headers)
-    ↓
-Dependencies (get_db → DB session, get_current_user → validates JWT)
-    ↓
-Pydantic Schema Validation (request body)
-    ↓
-Route Function (your logic)
-    ↓
-SQLAlchemy (queries DB)
-    ↓
-PostgreSQL
-    ↓
-Response serialized via Pydantic response_model
-    ↓
-Client receives JSON
+def test_create_post_unauthorized():
+    response = client.post("/posts", json={"title": "Test", "content": "Hi"})
+    assert response.status_code == 403
 ```
 
-## Key Takeaways
-
-1. **Pydantic ≠ SQLAlchemy models.** Keep them separate. One defines API shape, the other defines DB shape.
-2. **Never store plain text passwords.** Always bcrypt hash before writing to DB.
-3. **JWT is stateless.** The server never stores sessions — the token *is* the proof of identity.
-4. **Alembic > `create_all()` for production.** Schema evolution requires migration tracking.
-5. **Environment variables > hardcoded credentials.** Use `.env` locally, GitHub Secrets in CI/CD.
-6. **Test against a separate database.** Never run tests against your production or development DB.
-7. **Docker makes your app portable.** Container = code + dependencies + runtime, all in one.
-8. **CI/CD is not optional at professional level.** Automating test → deploy is standard practice.
+- `TestClient` → simulates HTTP requests to your app without a real server
+- `assert` → if condition is false, test fails
+- `pytest` → discovers and runs all `test_*.py` files automatically
+- Test database → use a separate test DB and clear it between tests
 
 ---
 
-*Notes compiled from: Python API Development - Comprehensive Course for Beginners by Sanjeev Thiyagarajan | freeCodeCamp*
+## Quick Reference — Status Codes
+
+| Code | Meaning | When to use |
+|------|---------|------------|
+| 200 | OK | Successful GET, PUT, PATCH |
+| 201 | Created | Successful POST |
+| 204 | No Content | Successful DELETE |
+| 400 | Bad Request | Malformed request |
+| 401 | Unauthorized | Not logged in |
+| 403 | Forbidden | Logged in but not allowed |
+| 404 | Not Found | Resource doesn't exist |
+| 422 | Unprocessable | Validation error (wrong data type) |
+| 500 | Server Error | Bug in your code |
+
+---
+
+## Quick Reference — Full Stack Summary
+
+| Layer | Tool | Purpose |
+|-------|------|---------|
+| Language | Python | Backend logic |
+| Framework | FastAPI | Route handling, request/response |
+| Validation | Pydantic | Input/output data validation |
+| Database | PostgreSQL | Persistent data storage |
+| ORM | SQLAlchemy | Python ↔ database bridge |
+| Migrations | Alembic | Schema change management |
+| Auth | JWT + bcrypt | Secure authentication |
+| Server | Uvicorn + Gunicorn | Run the Python app |
+| Proxy | Nginx | HTTPS, routing, performance |
+| Container | Docker | Portable, reproducible environment |
+| CI/CD | GitHub Actions | Automated testing and deployment |
+
+---
+*Notes by Anik | freeCodeCamp.org — Python API Development Comprehensive Course*
